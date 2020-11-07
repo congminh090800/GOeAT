@@ -1,21 +1,23 @@
 package com.example.goeat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.goeat.auth.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Date;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -23,13 +25,13 @@ public class SignUpActivity extends AppCompatActivity {
     private Button regBtn, toLoginBtn;
     private ProgressBar progressBar;
 
-    private FirebaseAuth mAuth;
+    private Auth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = Auth.getInstance();
         initializeUI();
 
 
@@ -63,15 +65,21 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
             return;
         }
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        User user = new User();
+        user.setEmail(email);
+        user.setAvatarURL("https://cdn.pixabay.com/photo/2015/06/25/14/13/fern-821293_1280.jpg");
+        user.setBirthdate(new Date().getTime());
+        user.setGender("Male");
+        user.setHometown("HCM");
+        user.setUsername("blalalla");
+        mAuth.createUserWithEmailAndPassword(user, password)
+                .addOnCompleteListener(new OnCompleteListener<User>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<User> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
-
+                            Log.d("Acc", "onComplete: " + task.getResult());
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                             startActivity(intent);
                         }
