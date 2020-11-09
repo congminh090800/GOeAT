@@ -33,7 +33,12 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
+<<<<<<< HEAD
     implementation 'org.osmdroid:osmdroid-android:6.1.8'
     implementation 'com.github.MKergall:osmbonuspack:6.6.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
+=======
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-storage'
+>>>>>>> f47f38ecb0cc9abd98a32b3b190bf27d42c64f3f
 }
