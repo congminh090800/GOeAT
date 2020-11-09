@@ -16,15 +16,15 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:requestLegacyExternalStorage="true">
         <activity android:name=".LoginActivity">
-
-        </activity>
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
+             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>           
+        </activity>
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".MainActivity">
+
         </activity>
     </application>
 
