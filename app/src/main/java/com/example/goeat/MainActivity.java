@@ -16,21 +16,30 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.opengl.Visibility;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 
 import android.location.LocationListener;
 import android.util.Log;
+import android.view.View;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.NetworkLocationIgnorer;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.DirectedLocationOverlay;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -45,13 +54,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
+        Configuration.getInstance().setUserAgentValue(ctx.getPackageName());
 
         setContentView(R.layout.activity_main);
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setHorizontalMapRepetitionEnabled(false);
+        map.setVerticalMapRepetitionEnabled(false);
+        map.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
 
         requestPermissionsIfNecessary(new String[] {
                 // if you need to show the current location, uncomment the line below
@@ -60,16 +75,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
 
-        map.setBuiltInZoomControls(true);
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
         map.setMultiTouchControls(true);
         IMapController mapController = map.getController();
-        mapController.setZoom(20);
-
+        myLocationOverlay = new DirectedLocationOverlay(this);
+        map.getController().animateTo(myLocationOverlay.getLocation());
         mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        myLocationOverlay = new DirectedLocationOverlay(this);
-        map.getOverlays().add(myLocationOverlay);
+
         Location location = null;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -82,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             Log.d("currentLocation","current location not found");
             myLocationOverlay.setEnabled(false);
         }
+        map.invalidate();
     }
     @Override
     public void onResume() {
@@ -94,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         boolean isOneProviderEnabled = startLocationUpdates();
         myLocationOverlay.setEnabled(isOneProviderEnabled);
         mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
+        map.getController().setCenter(myLocationOverlay.getLocation());
+        map.getController().setZoom(19.0);
+        map.getOverlays().add(myLocationOverlay);
+        //map.invalidate();
     }
 
     @Override
@@ -181,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 myLocationOverlay.setBearing(mAzimuthAngleSpeed);
             }
         }
-        map.getController().animateTo(myLocationOverlay.getLocation());
+        //map.getController().animateTo(myLocationOverlay.getLocation());
         //just redraw the location overlay:
         map.invalidate();
 
