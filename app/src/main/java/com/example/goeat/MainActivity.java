@@ -27,6 +27,7 @@ import android.location.LocationListener;
 import android.util.Log;
 import android.view.View;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
         Configuration.getInstance().setUserAgentValue(ctx.getPackageName());
-
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_main);
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -74,16 +75,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
-
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
         map.setMultiTouchControls(true);
         IMapController mapController = map.getController();
-        myLocationOverlay = new DirectedLocationOverlay(this);
-        map.getController().animateTo(myLocationOverlay.getLocation());
         mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-
+        map.getController().setZoom(18.0);
+        myLocationOverlay = new DirectedLocationOverlay(this);
+        map.getOverlays().add(myLocationOverlay);
         Location location = null;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         if (location != null) {
             onLocationChanged(location);
+            Log.d("location null","its not null");
         } else {
             Log.d("currentLocation","current location not found");
             myLocationOverlay.setEnabled(false);
         }
-        map.invalidate();
     }
     @Override
     public void onResume() {
@@ -110,9 +110,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         myLocationOverlay.setEnabled(isOneProviderEnabled);
         mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
         map.getController().setCenter(myLocationOverlay.getLocation());
-        map.getController().setZoom(19.0);
-        map.getOverlays().add(myLocationOverlay);
-        //map.invalidate();
     }
 
     @Override
@@ -165,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         boolean result = false;
         for (final String provider : mLocationManager.getProviders(true)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLocationManager.requestLocationUpdates(provider, 1, 0.0f, this);
+                mLocationManager.requestLocationUpdates(provider, 2*1000, 0.0f, this);
                 result = true;
             }
         }
@@ -181,12 +178,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (mIgnorer.shouldIgnore(pLoc.getProvider(), currentTime))
             return;
         double dT = currentTime - mLastTime;
-        if (dT < 1.5){
+        if (dT < 100){
             return;
         }
         mLastTime = currentTime;
 
         GeoPoint newLocation = new GeoPoint(pLoc);
+            //we get the location for the first time:
+            myLocationOverlay.setEnabled(true);
+
         GeoPoint prevLocation = myLocationOverlay.getLocation();
         myLocationOverlay.setLocation(newLocation);
         myLocationOverlay.setAccuracy((int)pLoc.getAccuracy());
@@ -203,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //map.getController().animateTo(myLocationOverlay.getLocation());
         //just redraw the location overlay:
         map.invalidate();
-
     }
     @Override public void onProviderDisabled(String provider) {}
 
@@ -222,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             case Sensor.TYPE_ORIENTATION:
                 if (mSpeed < 0.1){
 					float azimuth = event.values[0];
-					if (Math.abs(azimuth-mAzimuthOrientation)>0.1f){
+					if (Math.abs(azimuth-mAzimuthOrientation)>2f){
 						mAzimuthOrientation = azimuth;
 						myLocationOverlay.setBearing(mAzimuthOrientation);
 						map.invalidate();
