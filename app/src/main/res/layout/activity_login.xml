@@ -30,7 +30,7 @@
         android:contentDescription="logo"
         android:src="@drawable/login_logo"
         app:layout_constraintEnd_toStartOf="@+id/guideline_right"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.264"
         app:layout_constraintStart_toStartOf="@+id/guideline_left"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,11 +102,11 @@
         android:id="@+id/minilogo"
         android:layout_width="153dp"
         android:layout_height="82dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="156dp"
         android:contentDescription="minilogo"
         android:src="@drawable/goeat"
         app:layout_constraintEnd_toStartOf="@+id/guideline_right"
-        app:layout_constraintHorizontal_bias="0.809"
+        app:layout_constraintHorizontal_bias="0.69"
         app:layout_constraintStart_toStartOf="@+id/guideline_left"
         app:layout_constraintTop_toTopOf="parent" />
 
