@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         myLocationOverlay.setDirectionArrow(myLocationBitmap);
         map.getOverlays().add(myLocationOverlay);
-
         Location location = null;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
