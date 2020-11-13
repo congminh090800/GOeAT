@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FBEAEB"
+    android:background="#24b2b4"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="16dp"
@@ -15,7 +15,7 @@
         android:layout_height="34dp"
         android:layout_marginTop="40dp"
         android:text="Đăng ký tài khoản"
-        android:textColor="#579bc8"
+        android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/guideline_left"
@@ -29,7 +29,7 @@
         android:background="@drawable/btn_login"
         android:text="ĐĂNG KÝ"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         android:textSize="22sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,7 +43,7 @@
         android:layout_marginTop="20dp"
         android:background="@android:color/transparent"
         android:text="Trở về đăng nhập"
-        android:textColor="#958F8E"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
@@ -57,10 +57,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:hint="Địa chỉ email"
+        android:backgroundTint="#FFFFFF"
         android:paddingVertical="18dp"
         android:inputType="textEmailAddress"
         android:textColor="#000000"
-        android:textColorHint="#C0BCBC"
+        android:textColorHint="#DFEDF0"
         android:textSize="19sp"
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
@@ -73,9 +74,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="320dp"
         android:hint="Mật khẩu"
+        android:backgroundTint="#FFFFFF"
         android:inputType="textPassword"
         android:paddingVertical="18dp"
-        android:textColorHint="#C0BCBC"
+        android:textColorHint="#DFEDF0"
         android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
@@ -101,7 +103,8 @@
         android:layout_height="wrap_content"
         android:hint="Tên người dùng"
         android:inputType="textNoSuggestions"
-        android:textColorHint="#C0BCBC"
+        android:backgroundTint="#FFFFFF"
+        android:textColorHint="#DFEDF0"
         android:textSize="19sp"
         android:paddingVertical="18dp"
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
@@ -131,10 +134,13 @@
             android:layout_marginTop="-2dp"
             android:orientation="horizontal">
 
+
             <RadioButton
                 android:id="@+id/male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
                 android:text="Nam" />
 
             <RadioButton
@@ -142,6 +148,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30px"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FFFFFF"
                 android:text="Nữ" />
 
 
@@ -152,6 +160,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Giới tính "
+            android:textColor="#FFFFFF"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="20sp" />
 
