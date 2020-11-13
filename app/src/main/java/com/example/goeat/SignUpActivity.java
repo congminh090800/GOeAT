@@ -45,6 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -81,6 +82,7 @@ public class SignUpActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                             Log.d("Acc", "onComplete: " + task.getResult());
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                            finish();
                             startActivity(intent);
                         }
                         else {
@@ -89,6 +91,12 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("State:","onStop");
+        finish();
     }
     private void initializeUI() {
         emailTV = findViewById(R.id.email);

@@ -5,39 +5,40 @@ package com.example.goeat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 
 import android.location.LocationListener;
 import android.util.Log;
-import android.view.View;
 
-import org.osmdroid.api.IGeoPoint;
+import com.example.goeat.auth.ScaleBitmap;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.tileprovider.tilesource.XYTileSource;
-import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.NetworkLocationIgnorer;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.DirectedLocationOverlay;
 
 import java.io.File;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
     float mAzimuthAngleSpeed = 0.0f;
-    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    //private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     protected DirectedLocationOverlay myLocationOverlay;
     protected LocationManager mLocationManager;
@@ -60,29 +61,45 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Context ctx = getApplicationContext();
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
-        Configuration.getInstance().setUserAgentValue(ctx.getPackageName());
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_main);
         map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setHorizontalMapRepetitionEnabled(false);
-        map.setVerticalMapRepetitionEnabled(false);
-        map.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
 
-        requestPermissionsIfNecessary(new String[] {
-                // if you need to show the current location, uncomment the line below
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                // WRITE_EXTERNAL_STORAGE is required in order to show the map
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        });
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+//        requestPermissionsIfNecessary(new String[] {
+//                // if you need to show the current location, uncomment the line below
+//                Manifest.permission.ACCESS_FINE_LOCATION,
+//                // WRITE_EXTERNAL_STORAGE is required in order to show the map
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE
+//        });
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setTilesScaledToDpi(true);
+        //map.setHorizontalMapRepetitionEnabled(false);
+        //map.setVerticalMapRepetitionEnabled(false);
+        map.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
+        map.getOverlayManager().getTilesOverlay().setLoadingBackgroundColor(Color.parseColor("#00af54"));
+        map.getOverlayManager().getTilesOverlay().setLoadingLineColor(Color.parseColor("#50c34c"));
+        map.setMaxZoomLevel(21.0);
+        map.setMinZoomLevel(3.0);
         map.setMultiTouchControls(true);
+        
+        RotationGestureOverlay mRotationGestureOverlay = new RotationGestureOverlay(map);
+        mRotationGestureOverlay.setEnabled(true);
+        map.getOverlays().add(mRotationGestureOverlay);
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+
         IMapController mapController = map.getController();
         mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        map.getController().setZoom(18.0);
+        map.getController().setZoom(15.0);
+
         myLocationOverlay = new DirectedLocationOverlay(this);
+        Drawable myLocationDrawable= ResourcesCompat.getDrawable(getResources(),R.drawable.current_location_icon,null);
+        Bitmap myLocationBitmap=((BitmapDrawable)myLocationDrawable).getBitmap();
+        myLocationBitmap=ScaleBitmap.scaleDown(myLocationBitmap,120,true);
+
+        myLocationOverlay.setDirectionArrow(myLocationBitmap);
         map.getOverlays().add(myLocationOverlay);
         Location location = null;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -105,11 +122,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
         boolean isOneProviderEnabled = startLocationUpdates();
         myLocationOverlay.setEnabled(isOneProviderEnabled);
         mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
         map.getController().setCenter(myLocationOverlay.getLocation());
+        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
     @Override
@@ -119,50 +136,50 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
-        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationManager.removeUpdates(this);
         }
         mSensorManager.unregisterListener(this);
+        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (int i = 0; i < grantResults.length; i++) {
-            permissionsToRequest.add(permissions[i]);
-        }
-        if (permissionsToRequest.size() > 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    private void requestPermissionsIfNecessary(String[] permissions) {
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                permissionsToRequest.add(permission);
-            }
-        }
-        if (permissionsToRequest.size() > 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        ArrayList<String> permissionsToRequest = new ArrayList<>();
+//        for (int i = 0; i < grantResults.length; i++) {
+//            permissionsToRequest.add(permissions[i]);
+//        }
+//        if (permissionsToRequest.size() > 0) {
+//            ActivityCompat.requestPermissions(
+//                    this,
+//                    permissionsToRequest.toArray(new String[0]),
+//                    REQUEST_PERMISSIONS_REQUEST_CODE);
+//        }
+//    }
+//
+//    private void requestPermissionsIfNecessary(String[] permissions) {
+//        ArrayList<String> permissionsToRequest = new ArrayList<>();
+//        for (String permission : permissions) {
+//            if (ContextCompat.checkSelfPermission(this, permission)
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                // Permission is not granted
+//                permissionsToRequest.add(permission);
+//            }
+//        }
+//        if (permissionsToRequest.size() > 0) {
+//            ActivityCompat.requestPermissions(
+//                    this,
+//                    permissionsToRequest.toArray(new String[0]),
+//                    REQUEST_PERMISSIONS_REQUEST_CODE);
+//        }
+//    }
 
 
     boolean startLocationUpdates(){
         boolean result = false;
         for (final String provider : mLocationManager.getProviders(true)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLocationManager.requestLocationUpdates(provider, 2*1000, 0.0f, this);
+                mLocationManager.requestLocationUpdates(provider, 500, 0.0f, this);
                 result = true;
             }
         }
@@ -209,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override public void onProviderEnabled(String provider) {}
 
     @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
-    //------------ SensorEventListener implementation
+
     @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {
         myLocationOverlay.setAccuracy(accuracy);
         map.invalidate();
@@ -228,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 					}
 
                 }
-                //at higher speed, we use speed vector, not phone orientation.
                 break;
             default:
                 break;
