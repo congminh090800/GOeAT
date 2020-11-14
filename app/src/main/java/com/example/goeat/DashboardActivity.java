@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class DashboardActivity extends AppCompatActivity {
     private Button goBtn,reviewBtn;
     private GeocodingAsync myGeocoding;
-    public static Address curAddress=null;
+    private Address curAddress=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +56,6 @@ public class DashboardActivity extends AppCompatActivity {
         myGeocoding=new GeocodingAsync(DashboardActivity.this, new GeocodingAsyncResponse() {
             @Override
             public void processFinish(Address address) {
-                curAddress=address;
             }
         });
         try {

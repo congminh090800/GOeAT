@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -65,6 +66,12 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         Log.d("Geocoding coord",location.toString());
         mLocationManager.removeUpdates(this);
     }
+    @Override public void onProviderDisabled(String provider) {}
+
+    @Override public void onProviderEnabled(String provider) {}
+
+    @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
+
     @Override
     protected void onPostExecute(Address address) {
         delegate.processFinish(address);
