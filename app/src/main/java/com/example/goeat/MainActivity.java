@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         boolean result = false;
         for (final String provider : mLocationManager.getProviders(true)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLocationManager.requestLocationUpdates(provider, 500, 0.0f, this);
+                mLocationManager.requestLocationUpdates(provider, 2000, 0.0f, this);
                 result = true;
             }
         }

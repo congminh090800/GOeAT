@@ -2,6 +2,8 @@ package com.example.goeat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,10 +13,8 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.widget.TextView;
 import androidx.core.content.ContextCompat;
-import androidx.core.os.CancellationSignal;
-
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
@@ -25,46 +25,56 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements LocationListener{
     Activity contextParent;
-    protected LocationManager mLocationManager;
-    public GeocodingAsyncResponse delegate=null;
-    public GeocodingAsync(Activity contextParent,GeocodingAsyncResponse res) {
+    public LocationManager mLocationManager;
+    public long mLastime=0;
+    public GeocodingAsync(Activity contextParent) {
         this.contextParent = contextParent;
         this.mLocationManager = (LocationManager)contextParent.getSystemService(LOCATION_SERVICE);
-        this.delegate=res;
         Log.d("Geocoding:", "reverse-geocoding current location AsyncTask created");
     }
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         if (ContextCompat.checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 1000*60*10, 0.0f, this);
+            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 500, 0.0f, this);
         }
     }
     @Override
     protected Address doInBackground(Void... voids) {
         Location location = null;
         Address address=null;
-        if (ContextCompat.checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location == null)
-                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        mLastime=System.currentTimeMillis();
+        while(System.currentTimeMillis()-mLastime<=2000) {
+            if (ContextCompat.checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location == null)
+                    location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            mLocationManager.removeUpdates(this);
         }
         final GeoPoint currentPoint = new GeoPoint(location);
+
         address=getAddress(currentPoint);
+
         if (currentPoint==null) {
             Log.d("Geocoding:","location is null");
             return null;
         }
         else {
-            Log.d("Geocoding:",address.toString());
+            String city="",province="",district="";
+            if (address.getCountryName()!=null) city=address.getCountryName();
+            if (address.getAdminArea()!=null) province=address.getAdminArea();
+            if (address.getSubAdminArea()!=null) district=address.getSubAdminArea();
+
+            SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("curAddress",city+"|"+province+"|"+district);
+            editor.apply();
         }
         return address;
     }
     @Override
     public void onLocationChanged(Location location) {
-        // your code and required methods go here...
-        Log.d("Geocoding coord",location.toString());
-        mLocationManager.removeUpdates(this);
     }
     @Override public void onProviderDisabled(String provider) {}
 
@@ -74,7 +84,8 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
 
     @Override
     protected void onPostExecute(Address address) {
-        delegate.processFinish(address);
+        TextView txtLocation=contextParent.findViewById(R.id.txtLocation);
+        txtLocation.setText(getAddressStr(address));
     }
 
     public Address getAddress(GeoPoint p){
@@ -107,16 +118,10 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
             return null;
         }
     }
-    public String getAddressStr(GeoPoint p){
-        Geocoder geocoder = new Geocoder(contextParent);
+    public String getAddressStr(Address address){
         String theAddress;
-        try {
-            double dLatitude = p.getLatitude();
-            double dLongitude = p.getLongitude();
-            List<Address> addresses = geocoder.getFromLocation(dLatitude, dLongitude, 1);
             StringBuilder sb = new StringBuilder();
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
+            if (address!=null) {
                 int n = address.getMaxAddressLineIndex();
                 for (int i=0; i<=n; i++) {
                     if (i!=0)
@@ -127,9 +132,6 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
             } else {
                 theAddress = null;
             }
-        } catch (IOException e) {
-            theAddress = null;
-        }
         if (theAddress != null) {
             return theAddress;
         } else {

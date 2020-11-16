@@ -23,8 +23,6 @@ import java.util.Date;
 public class SignUpActivity extends AppCompatActivity {
     private EditText emailTV, passwordTV;
     private Button regBtn, toLoginBtn;
-    private ProgressBar progressBar;
-
     private Auth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
     private void registerNewUser() {
-        progressBar.setVisibility(View.VISIBLE);
 
         String email, password;
         email = emailTV.getText().toString();
@@ -73,13 +70,14 @@ public class SignUpActivity extends AppCompatActivity {
         user.setGender("Male");
         user.setHometown("HCM");
         user.setUsername("blalalla");
+        Log.d("Test","before");
         mAuth.createUserWithEmailAndPassword(user, password)
                 .addOnCompleteListener(new OnCompleteListener<User>() {
                     @Override
                     public void onComplete(@NonNull Task<User> task) {
+                        Log.d("Test","after");
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
                             Log.d("Acc", "onComplete: " + task.getResult());
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                             finish();
@@ -87,7 +85,6 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                         else {
                             Toast.makeText(getApplicationContext(), "Registration failed! Please try again later", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -103,6 +100,5 @@ public class SignUpActivity extends AppCompatActivity {
         passwordTV = findViewById(R.id.password);
         regBtn = findViewById(R.id.register);
         toLoginBtn=findViewById(R.id.toLogin);
-        progressBar = findViewById(R.id.progressBar);
     }
 }

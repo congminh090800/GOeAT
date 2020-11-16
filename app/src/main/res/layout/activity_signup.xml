@@ -163,7 +163,6 @@
             android:textColor="#FFFFFF"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="20sp" />
-
     </RelativeLayout>
 
     <androidx.constraintlayout.widget.Guideline
