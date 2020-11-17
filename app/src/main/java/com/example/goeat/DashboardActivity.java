@@ -1,29 +1,17 @@
 package com.example.goeat;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.LocationListener;
-import android.location.LocationManager;
+
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.osmdroid.util.GeoPoint;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class DashboardActivity extends AppCompatActivity {
     private Button goBtn,reviewBtn;

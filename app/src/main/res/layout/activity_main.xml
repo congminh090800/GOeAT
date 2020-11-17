@@ -7,6 +7,11 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".MainActivity">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/testBtn"
+        android:text="button"/>
     <org.osmdroid.views.MapView android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

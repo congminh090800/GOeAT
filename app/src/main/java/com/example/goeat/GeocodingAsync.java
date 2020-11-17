@@ -52,8 +52,9 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
             }
             mLocationManager.removeUpdates(this);
         }
+        SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
         final GeoPoint currentPoint = new GeoPoint(location);
-
         address=getAddress(currentPoint);
 
         if (currentPoint==null) {
@@ -66,9 +67,9 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
             if (address.getAdminArea()!=null) province=address.getAdminArea();
             if (address.getSubAdminArea()!=null) district=address.getSubAdminArea();
 
-            SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("curAddress",city+"|"+province+"|"+district);
+            editor=putDouble(editor,"mStartLadtitude",location.getLatitude());
+            editor=putDouble(editor,"mStartLongtitude",location.getLongitude());
             editor.apply();
         }
         return address;
@@ -137,5 +138,9 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         } else {
             return "";
         }
+    }
+    //cast to get shared preferences
+    SharedPreferences.Editor putDouble(final SharedPreferences.Editor edit, final String key, final double value) {
+        return edit.putLong(key, Double.doubleToRawLongBits(value));
     }
 }
