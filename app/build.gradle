@@ -24,8 +24,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 dependencies {
+<<<<<<< HEAD
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+=======
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.wear:wear:1.0.0'
+>>>>>>> 4e3274897eacfdb9b50de8140bea8181a850f9f6
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -39,4 +46,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.android.material:material:1.2.0'
+<<<<<<< HEAD
+=======
+    compileOnly 'com.google.android.wearable:wearable:2.5.0'
+
+
+>>>>>>> 4e3274897eacfdb9b50de8140bea8181a850f9f6
 }
