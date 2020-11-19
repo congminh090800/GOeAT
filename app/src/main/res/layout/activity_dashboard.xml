@@ -16,7 +16,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:src="@drawable/bakery"></ImageView>
+            android:src="@drawable/bakery">
+
+        </ImageView>
         <ImageButton
             android:id="@+id/goBtn"
             android:layout_width="wrap_content"
