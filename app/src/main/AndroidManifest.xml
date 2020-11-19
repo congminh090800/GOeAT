@@ -25,15 +25,20 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".DashboardActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".DashboardActivity"
+            />
+        <activity android:name=".DashboardActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity"
-                    android:theme="@style/SplashScreen">
+            android:theme="@style/SplashScreen">
 
         </activity>
     </application>

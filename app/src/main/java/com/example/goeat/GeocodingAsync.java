@@ -13,6 +13,9 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import org.osmdroid.util.GeoPoint;
@@ -27,6 +30,7 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     Activity contextParent;
     public LocationManager mLocationManager;
     public long mLastime=0;
+
     public GeocodingAsync(Activity contextParent) {
         this.contextParent = contextParent;
         this.mLocationManager = (LocationManager)contextParent.getSystemService(LOCATION_SERVICE);

@@ -1,9 +1,7 @@
 package com.example.goeat;
 
 
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -23,7 +21,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -32,16 +29,12 @@ import android.preference.PreferenceManager;
 import android.location.LocationListener;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.goeat.auth.ScaleBitmap;
 
-import org.osmdroid.api.IMapController;
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.Road;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
@@ -50,8 +43,6 @@ import org.osmdroid.util.NetworkLocationIgnorer;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.DirectedLocationOverlay;
 
@@ -61,7 +52,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener, MapView.OnFirstLayoutListener {
     float mAzimuthAngleSpeed = 0.0f;
-    //private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     protected DirectedLocationOverlay myLocationOverlay;
     protected LocationManager mLocationManager;
@@ -71,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private GeoPoint mStartPoint,mEndPoint;
     private Marker startMarker,endMarker;
     private ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>(2);
-    private Button testBtn;
+    private ImageButton locateBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,26 +70,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(0);
         setContentView(R.layout.activity_main);
+        locateBtn=(ImageButton)findViewById(R.id.locateBtn);
         map = (MapView) findViewById(R.id.map);
-        testBtn=findViewById(R.id.testBtn);
-        if (map.getScreenRect(null).height() <= 0) {
-            mInitialBoundingBox = computeArea(waypoints);
-            map.addOnFirstLayoutListener(this);
-        } else
-            map.zoomToBoundingBox(computeArea(waypoints), false);
-//        requestPermissionsIfNecessary(new String[] {
-//                // if you need to show the current location, uncomment the line below
-//                Manifest.permission.ACCESS_FINE_LOCATION,
-//                // WRITE_EXTERNAL_STORAGE is required in order to show the map
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE
-//        });
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setTilesScaledToDpi(true);
 
-        //map.setHorizontalMapRepetitionEnabled(false);
-        //map.setVerticalMapRepetitionEnabled(false);
         map.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
         map.getOverlayManager().getTilesOverlay().setLoadingBackgroundColor(Color.parseColor("#00af54"));
         map.getOverlayManager().getTilesOverlay().setLoadingLineColor(Color.parseColor("#50c34c"));
@@ -110,9 +89,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         RotationGestureOverlay mRotationGestureOverlay = new RotationGestureOverlay(map);
         mRotationGestureOverlay.setEnabled(true);
         map.getOverlays().add(mRotationGestureOverlay);
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+        //map.setBuiltInZoomControls(false);
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
-        IMapController mapController = map.getController();
         mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -136,7 +115,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             Log.d("currentLocation","current location not found");
             myLocationOverlay.setEnabled(false);
         }
-        map.invalidate();
+        locateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.getController().animateTo(myLocationOverlay.getLocation());
+            }
+        });
     }
     @Override
     public void onResume() {
@@ -171,38 +155,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mSensorManager.unregisterListener(this);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        ArrayList<String> permissionsToRequest = new ArrayList<>();
-//        for (int i = 0; i < grantResults.length; i++) {
-//            permissionsToRequest.add(permissions[i]);
-//        }
-//        if (permissionsToRequest.size() > 0) {
-//            ActivityCompat.requestPermissions(
-//                    this,
-//                    permissionsToRequest.toArray(new String[0]),
-//                    REQUEST_PERMISSIONS_REQUEST_CODE);
-//        }
-//    }
-//
-//    private void requestPermissionsIfNecessary(String[] permissions) {
-//        ArrayList<String> permissionsToRequest = new ArrayList<>();
-//        for (String permission : permissions) {
-//            if (ContextCompat.checkSelfPermission(this, permission)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                // Permission is not granted
-//                permissionsToRequest.add(permission);
-//            }
-//        }
-//        if (permissionsToRequest.size() > 0) {
-//            ActivityCompat.requestPermissions(
-//                    this,
-//                    permissionsToRequest.toArray(new String[0]),
-//                    REQUEST_PERMISSIONS_REQUEST_CODE);
-//        }
-//    }
-
 
     boolean startLocationUpdates(){
         boolean result = false;
@@ -247,8 +199,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 myLocationOverlay.setBearing(mAzimuthAngleSpeed);
             }
         }
-        //map.getController().animateTo(myLocationOverlay.getLocation());
-        //just redraw the location overlay:
         map.invalidate();
     }
     @Override public void onProviderDisabled(String provider) {}
@@ -308,7 +258,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         map.getOverlays().add(endMarker);
 
         //Routing
-        new RoutingAsync(this).execute(waypoints);
+        RoutingAsync routingAsync=new RoutingAsync(MainActivity.this);
+        routingAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,waypoints);
     }
     public void centerTheRoute(){
         if (map.getScreenRect(null).height() <= 0) {
