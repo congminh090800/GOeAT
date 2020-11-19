@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mLadtitude=getDouble(sharedPref,"mStartLadtitude",0);
         mLongtitude=getDouble(sharedPref,"mStartLongtitude",0);
         mStartPoint=new GeoPoint(mLadtitude,mLongtitude);
-        mEndPoint=new GeoPoint(10.8535, 106.7932);
+        mEndPoint=new GeoPoint(10.8759, 106.7990);
         if (mStartPoint==null || mEndPoint==null) return;
         waypoints.add(mStartPoint);
         waypoints.add(mEndPoint);
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         }
 
-        return new BoundingBox(nord+0.02, est+0.02, sud-0.02, ovest-0.02);
+        return new BoundingBox(nord+0.005, est+0.005, sud-0.005, ovest-0.005);
 
     }
     BoundingBox mInitialBoundingBox = null;

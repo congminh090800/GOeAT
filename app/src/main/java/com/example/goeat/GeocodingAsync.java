@@ -89,8 +89,6 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
 
     @Override
     protected void onPostExecute(Address address) {
-        TextView txtLocation=contextParent.findViewById(R.id.txtLocation);
-        txtLocation.setText(getAddressStr(address));
     }
 
     public Address getAddress(GeoPoint p){

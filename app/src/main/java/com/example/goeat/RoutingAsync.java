@@ -41,7 +41,7 @@ public class RoutingAsync extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
     protected void onPostExecute(Road result) {
         MapView map=mContext.findViewById(R.id.map);
         TextView routeLen=mContext.findViewById(R.id.routeLength);
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(result, Color.parseColor("#669df6"),20);
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(result, Color.parseColor("#24B2B4"),20);
         roadOverlay.getOutlinePaint().setStrokeCap(Paint.Cap.ROUND);
         routeLen.setText("Distance: "+Integer.toString((int)Math.round(roadOverlay.getDistance()/1000d))+" km");
         map.getOverlays().add(0,roadOverlay);
