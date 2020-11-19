@@ -26,7 +26,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <uses-library
             android:name="com.google.android.wearable"
-            android:required="true" />
+            android:required="false" />
 
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
@@ -34,7 +34,7 @@
         -->
         <meta-data
             android:name="com.google.android.wearable.standalone"
-            android:value="true" />
+            android:value="false" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -48,15 +48,19 @@
             android:name=".DashboardActivity"
             android:parentActivityName=".LoginActivity"
             android:theme="@style/AppTheme">
+
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/SplashScreen">
+        </activity>
+        <activity android:name=".TabActivity"
+            android:theme="@style/TabTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/SplashScreen">
         </activity>
     </application>
 

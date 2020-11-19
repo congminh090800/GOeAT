@@ -11,6 +11,13 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+    <style name="TabTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="SplashScreen" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@drawable/splash</item>item>
     </style>

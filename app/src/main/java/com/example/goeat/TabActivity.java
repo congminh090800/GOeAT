@@ -38,6 +38,7 @@ public class TabActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tab_layout);
