@@ -1,13 +1,11 @@
 package com.example.goeat;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Objects;
 
 
 public class DashboardActivity extends AppCompatActivity {
@@ -22,7 +20,7 @@ public class DashboardActivity extends AppCompatActivity {
         myGeocoding=new GeocodingAsync(DashboardActivity.this);
         myGeocoding.execute();
         super.onCreate(savedInstanceState);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
         //UI INIT
