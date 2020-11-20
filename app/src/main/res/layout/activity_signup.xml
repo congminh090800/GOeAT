@@ -66,7 +66,8 @@
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@+id/minilogo" />
+        app:layout_constraintTop_toBottomOf="@+id/minilogo"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/password"
@@ -83,14 +84,16 @@
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        android:importantForAutofill="no"
+        tools:ignore="UnknownIdInLayout" />
 
     <ImageView
         android:id="@+id/minilogo"
         android:layout_width="153dp"
         android:layout_height="82dp"
         android:layout_marginTop="68dp"
-        android:contentDescription="minilogo"
+        android:contentDescription="@string/minilogo"
         android:src="@drawable/goeat"
         app:layout_constraintEnd_toStartOf="@+id/guideline_right"
         app:layout_constraintHorizontal_bias="0.494"
@@ -110,7 +113,8 @@
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        android:importantForAutofill="no" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -132,7 +136,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginEnd="118dp"
             android:layout_marginTop="-2dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="RelativeOverlap">
 
 
             <RadioButton
@@ -141,13 +146,13 @@
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:buttonTint="#FFFFFF"
-                android:text="Nam" />
+                android:text="@string/nam" />
 
             <RadioButton
                 android:id="@+id/female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
+                android:layout_marginStart="30dp"
                 android:textColor="#FFFFFF"
                 android:buttonTint="#FFFFFF"
                 android:text="Nữ" />
