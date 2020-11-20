@@ -27,7 +27,7 @@
         android:layout_width="242dp"
         android:layout_height="175dp"
         android:layout_marginTop="48dp"
-        android:contentDescription="logo"
+        android:contentDescription="@string/logo"
         android:src="@drawable/login_logo"
         app:layout_constraintEnd_toStartOf="@+id/guideline_right"
         app:layout_constraintHorizontal_bias="0.264"
@@ -68,7 +68,8 @@
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        tools:ignore="UnknownIdInLayout" />
 
     <Button
         android:id="@+id/login"
@@ -103,7 +104,7 @@
         android:layout_width="153dp"
         android:layout_height="82dp"
         android:layout_marginTop="156dp"
-        android:contentDescription="minilogo"
+        android:contentDescription="@string/minilogo"
         android:src="@drawable/goeat"
         app:layout_constraintEnd_toStartOf="@+id/guideline_right"
         app:layout_constraintHorizontal_bias="0.69"
