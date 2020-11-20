@@ -1,16 +1,9 @@
 package com.example.goeat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -19,16 +12,23 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.goeat.auth.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+class LoginActivity extends AppCompatActivity {
     private EditText emailTV, passwordTV;
     private Button loginBtn, toSignUpBtn;
     private ProgressBar progressBar;
@@ -121,28 +121,26 @@ public class LoginActivity extends AppCompatActivity {
             permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         if (!permissions.isEmpty()) {
-            String[] params = permissions.toArray(new String[permissions.size()]);
+            String[] params = permissions.toArray(new String[0]);
             ActivityCompat.requestPermissions(this, params, REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
         } // else: We already have permissions, so handle as normal
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         Log.d("State:","onRequest");
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
-                Map<String, Integer> perms = new HashMap<>();
-                // Initial
-                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
-                // Fill with results
-                for (int i = 0; i < permissions.length; i++)
-                    perms.put(permissions[i], grantResults[i]);
-                // Check for WRITE_EXTERNAL_STORAGE
-                Boolean storage = perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-                if (!storage) {
-                    // Permission Denied
-                } // else: permission was granted, yay!
-            }
+        if (requestCode == REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS) {
+            Map<String, Integer> perms = new HashMap<>();
+            // Initial
+            perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+            // Fill with results
+            for (int i = 0; i < permissions.length; i++)
+                perms.put(permissions[i], grantResults[i]);
+            // Check for WRITE_EXTERNAL_STORAGE
+            boolean storage = perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            if (!storage) {
+                // Permission Denied
+            } // else: permission was granted, yay!
         }
     }
 }
