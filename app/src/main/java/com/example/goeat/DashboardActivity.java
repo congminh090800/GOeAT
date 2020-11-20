@@ -12,15 +12,11 @@ import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
     private ImageButton goBtn;
-    private GeocodingAsync myGeocoding;
 //    //sử dụng SHARED PREFERENCES để lấy địa chỉ hiện tại ở bất cứ class nào, ví dụ bên dưới
 //    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
 //    curAddress=sharedPref.getString("curAddress","Vietnam|Thành phố Hồ Chí Minh|Bình Thạnh");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //FINDING CURRENT ADDRESS
-        myGeocoding=new GeocodingAsync(DashboardActivity.this);
-        myGeocoding.execute();
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -40,11 +36,4 @@ public class DashboardActivity extends AppCompatActivity {
     void InitializeUI(){
         goBtn=findViewById(R.id.goBtn);
     }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        myGeocoding=new GeocodingAsync(DashboardActivity.this);
-        myGeocoding.execute();
-    }
-
 }

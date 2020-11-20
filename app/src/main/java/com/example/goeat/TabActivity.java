@@ -30,7 +30,7 @@ public class TabActivity extends AppCompatActivity {
     private NearbyFragment nearbyFragment;
     private HistoryFragment historyFragment;
     private ProfileFragment profileFragment;
-
+    private GeocodingAsync myGeocoding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +42,8 @@ public class TabActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tab_layout);
+        myGeocoding=new GeocodingAsync(TabActivity.this);
+        myGeocoding.execute();
 
         homeFragment = new HomeFragment();
         nearbyFragment = new NearbyFragment();
@@ -93,5 +95,11 @@ public class TabActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return fragmentTitle.get(position);
         }
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        myGeocoding=new GeocodingAsync(TabActivity.this);
+        myGeocoding.execute();
     }
 }

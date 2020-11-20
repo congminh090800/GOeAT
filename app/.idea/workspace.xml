@@ -6,7 +6,13 @@
     </shared>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="34a116ab-9f81-4857-b555-e93fd61ada71" name="Default Changelist" comment="" />
+    <list default="true" id="34a116ab-9f81-4857-b555-e93fd61ada71" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/goeat/DashboardActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/goeat/DashboardActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/goeat/TabActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/goeat/TabActivity.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,7 +31,11 @@
       </state>
     </system>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1kW20yz3xm3SuOoUSLZOWUgCAtT" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -33,6 +43,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Android-Location--GoeAT-master (1)/Android-Location--GoeAT-master/app" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
@@ -115,9 +126,9 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="537" y="171" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1605805930373" />
-    <state x="453" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1605805861553">
+    <state x="453" y="240" key="com.intellij.ide.util.TipDialog" timestamp="1605885078816">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="453" y="240" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1605805861553" />
+    <state x="453" y="240" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1605885078816" />
   </component>
 </project>
