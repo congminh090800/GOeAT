@@ -1,7 +1,6 @@
 package com.example.goeat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,8 +13,11 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-
-import org.jetbrains.annotations.NotNull;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
@@ -23,17 +25,13 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static java.lang.System.currentTimeMillis;
 
-@SuppressWarnings("ALL")
 public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements LocationListener{
-    @SuppressLint("StaticFieldLeak")
     Activity contextParent;
     public LocationManager mLocationManager;
     public long mLastime=0;
 
-    public GeocodingAsync(@org.jetbrains.annotations.NotNull Activity contextParent) {
+    public GeocodingAsync(Activity contextParent) {
         this.contextParent = contextParent;
         this.mLocationManager = (LocationManager)contextParent.getSystemService(LOCATION_SERVICE);
         Log.d("Geocoding:", "reverse-geocoding current location AsyncTask created");
@@ -41,16 +39,17 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 500, 0.0f, this);
+        }
     }
     @Override
     protected Address doInBackground(Void... voids) {
         Location location = null;
         Address address=null;
-        mLastime= currentTimeMillis();
-        while(currentTimeMillis()-mLastime<=2000) {
-            if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        mLastime=System.currentTimeMillis();
+        while(System.currentTimeMillis()-mLastime<=2000) {
+            if (ContextCompat.checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location == null)
                     location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -60,11 +59,7 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         final GeoPoint currentPoint = new GeoPoint(location);
-        try {
-            address=getAddress(currentPoint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        address=getAddress(currentPoint);
 
         if (currentPoint==null) {
             Log.d("Geocoding:","location is null");
@@ -96,34 +91,58 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     protected void onPostExecute(Address address) {
     }
 
-    public Address getAddress(@NotNull GeoPoint p) throws IOException {
+    public Address getAddress(GeoPoint p){
         Geocoder geocoder = new Geocoder(contextParent, Locale.US);
         //String theAddress;
-        double dLatitude = p.getLatitude();
-        double dLongitude = p.getLongitude();
-        List<Address> addresses = geocoder.getFromLocation(dLatitude, dLongitude, 1);
-        Address address = addresses.size() > 0 ? addresses.get(0) : null;
-        return address != null ? address : null;
+        Address address;
+        try {
+            double dLatitude = p.getLatitude();
+            double dLongitude = p.getLongitude();
+            List<Address> addresses = geocoder.getFromLocation(dLatitude, dLongitude, 1);
+            //StringBuilder sb = new StringBuilder();
+            if (addresses.size() > 0) {
+                address = addresses.get(0);
+//                int n = address.getMaxAddressLineIndex();
+//                for (int i=0; i<=n; i++) {
+//                    if (i!=0)
+//                        sb.append(", ");
+//                    sb.append(address.getAddressLine(i));
+//                }
+//                theAddress = sb.toString();
+            } else {
+               address= null;
+            }
+        } catch (IOException e) {
+            address = null;
+        }
+        if (address != null) {
+            return address;
+        } else {
+            return null;
+        }
     }
     public String getAddressStr(Address address){
         String theAddress;
             StringBuilder sb = new StringBuilder();
-        if (address == null) theAddress = null;
-        else {
-            int n = address.getMaxAddressLineIndex();
-            int i=0;
-            while (i<=n) {
-                if (i!=0) sb.append(", ");
-                sb.append(address.getAddressLine(i));
-                i++;
+            if (address!=null) {
+                int n = address.getMaxAddressLineIndex();
+                for (int i=0; i<=n; i++) {
+                    if (i!=0)
+                        sb.append(", ");
+                    sb.append(address.getAddressLine(i));
+                }
+                theAddress = sb.toString();
+            } else {
+                theAddress = null;
             }
-            theAddress = sb.toString();
+        if (theAddress != null) {
+            return theAddress;
+        } else {
+            return "";
         }
-        if (theAddress != null) return theAddress;
-        return "";
     }
     //cast to get shared preferences
-    SharedPreferences.Editor putDouble(@NotNull final SharedPreferences.Editor edit, final String key, final double value) {
+    SharedPreferences.Editor putDouble(final SharedPreferences.Editor edit, final String key, final double value) {
         return edit.putLong(key, Double.doubleToRawLongBits(value));
     }
 }
