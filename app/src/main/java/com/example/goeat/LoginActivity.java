@@ -20,6 +20,8 @@ import androidx.core.content.ContextCompat;
 import com.example.goeat.auth.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.annotations.NotNull;
+
 
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +85,7 @@ class LoginActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
-                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, TabActivity.class);
                             finish();
                             startActivity(intent);
                         }
