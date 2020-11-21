@@ -18,10 +18,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.goeat.auth.Auth;
+import com.example.goeat.auth.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.annotations.NotNull;
-
+import com.google.android.gms.tasks.Tasks;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,21 +29,119 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     private EditText emailTV, passwordTV;
     private Button loginBtn, toSignUpBtn;
     private ProgressBar progressBar;
+    private Button forgotBtn;
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     private Auth mAuth;
+    private boolean isLoading = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("State:","onCreate");
+        Log.d("State:", "onCreate");
         setContentView(R.layout.activity_login);
-        mAuth = Auth.getInstance();
 
         initializeUI();
+
+        mAuth = Auth.getInstance();
+        checkAuthState();
+
+        checkPermissions();
+    }
+
+    private void setLoading(boolean state){
+        if (isLoading != state) {
+            isLoading = state;
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void checkAuthState() {
+        setLoading(true);
+        mAuth.loadCurrentUser().addOnCompleteListener(new OnCompleteListener<User>() {
+            @Override
+            public void onComplete(@NonNull Task<User> task) {
+                LoginActivity.this.setLoading(false);
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent(LoginActivity.this, TabActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    private void loginUserAccount() {
+        String email = emailTV.getText().toString();
+        String password = passwordTV.getText().toString();
+
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        setLoading(true);
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<User>() {
+                    @Override
+                    public void onComplete(@NonNull Task<User> task) {
+                        LoginActivity.this.setLoading(false);
+                        if (task.isSuccessful()) {
+                            Log.d("Login", "onComplete: " + task.getResult());
+                            Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
+
+                            Intent intent = new Intent(LoginActivity.this, TabActivity.class);
+                            finish();
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
+                });
+    }
+
+    private void sendPasswordResetEmail() {
+        String email = emailTV.getText().toString();
+        if (!Validator.isValidEmail(email)) {
+            Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+            return;
+        }
+        setLoading(true);
+        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                setLoading(false);
+                if (task.isSuccessful()) {
+                    Toast.makeText(LoginActivity.this, "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void initializeUI() {
+        emailTV = findViewById(R.id.email);
+        passwordTV = findViewById(R.id.password);
+        toSignUpBtn = findViewById(R.id.toSignUp);
+        loginBtn = findViewById(R.id.login);
+        progressBar = findViewById(R.id.progressBar);
+        forgotBtn = findViewById(R.id.forgotPassword);
+        setupUI();
+    }
+
+    private void setupUI(){
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,63 +155,26 @@ class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        checkPermissions();
+        forgotBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendPasswordResetEmail();
+            }
+        });
     }
 
-    private void loginUserAccount() {
-        String email, password;
-        email = emailTV.getText().toString();
-        password = passwordTV.getText().toString();
-
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<User>() {
-                    @Override
-                    public void onComplete(@NonNull Task<User> task) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        if (task.isSuccessful()) {
-                            Log.d("Login", "onComplete: " + task.getResult());
-                            Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
-
-                            Intent intent = new Intent(LoginActivity.this, TabActivity.class);
-                            finish();
-                            startActivity(intent);
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    }
-                });
-    }
-    private void initializeUI() {
-        emailTV = findViewById(R.id.email);
-        passwordTV = findViewById(R.id.password);
-        toSignUpBtn=findViewById(R.id.toSignUp);
-        loginBtn = findViewById(R.id.login);
-        progressBar = findViewById(R.id.progressBar);
-    }
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("State:","onResume");
+        Log.d("State:", "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("State:","onPause");
+        Log.d("State:", "onPause");
     }
+
     void checkPermissions() {
         List<String> permissions = new ArrayList<>();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -130,7 +191,7 @@ class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
-        Log.d("State:","onRequest");
+        Log.d("State:", "onRequest");
         if (requestCode == REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS) {
             Map<String, Integer> perms = new HashMap<>();
             // Initial

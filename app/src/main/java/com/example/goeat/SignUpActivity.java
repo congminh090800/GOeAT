@@ -2,27 +2,31 @@ package com.example.goeat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.goeat.auth.Auth;
+import com.example.goeat.auth.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import java.util.Date;
-
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText emailTV, passwordTV;
     private Button regBtn, toLoginBtn;
     private Auth mAuth;
+
+    private EditText usernameTV;
+    private RadioGroup genderRG;
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +34,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         mAuth = Auth.getInstance();
         initializeUI();
-
 
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,58 +49,60 @@ public class SignUpActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
+
     private void registerNewUser() {
+        String email = emailTV.getText().toString();
+        String password = passwordTV.getText().toString();
+        String username = usernameTV.getText().toString();
+        int selectedId = genderRG.getCheckedRadioButtonId();
+        String gender = (selectedId == R.id.female) ? "Female" : "Male";
 
-        String email, password;
-        email = emailTV.getText().toString();
-        password = passwordTV.getText().toString();
-
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+        if (!Validator.isValidEmail(email)) {
+            emailTV.setError("Invalid Email");
             return;
         }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
+        if (!Validator.isValidPassword(password)) {
+            passwordTV.setError(Validator.PASSWORD_RULE);
             return;
         }
-        User user = new User();
-        user.setEmail(email);
-        user.setAvatarURL("https://cdn.pixabay.com/photo/2015/06/25/14/13/fern-821293_1280.jpg");
-        user.setBirthdate(new Date().getTime());
-        user.setGender("Male");
-        user.setHometown("HCM");
-        user.setUsername("blalalla");
-        Log.d("Test","before");
+        if (!Validator.isValidUsername(username)) {
+            usernameTV.setError(Validator.USERNAME_RULE);
+            return;
+        }
+        progressBar.setVisibility(View.VISIBLE);
+        User user = new User(username, email, gender);
+
         mAuth.createUserWithEmailAndPassword(user, password)
                 .addOnCompleteListener(new OnCompleteListener<User>() {
                     @Override
                     public void onComplete(@NonNull Task<User> task) {
-                        Log.d("Test","after");
+                        progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
-                            Log.d("Acc", "onComplete: " + task.getResult());
-                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                            finish();
-                            startActivity(intent);
-                        }
-                        else {
+                            mAuth.signOut();
+                            SignUpActivity.this.finish();
+                        } else {
                             Toast.makeText(getApplicationContext(), "Registration failed! Please try again later", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
+
     @Override
     public void onStop() {
         super.onStop();
-        Log.d("State:","onStop");
+        Log.d("State:", "onStop");
         finish();
     }
+
     private void initializeUI() {
         emailTV = findViewById(R.id.email);
         passwordTV = findViewById(R.id.password);
         regBtn = findViewById(R.id.register);
-        toLoginBtn=findViewById(R.id.toLogin);
+        toLoginBtn = findViewById(R.id.toLogin);
+        usernameTV = findViewById(R.id.username);
+        genderRG = findViewById(R.id.sex);
+        progressBar = findViewById(R.id.progressBar);
     }
 }

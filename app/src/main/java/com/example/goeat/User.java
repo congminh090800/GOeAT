@@ -13,32 +13,31 @@ public class User {
     String uid;
     String username;
     String email;
-    String avatarURL;
     String gender;
-    String hometown;
     long dateCreated;
-    long birthdate;
 
     public User() {
         this.uid = "";
         this.username = "";
         this.email = "";
-        this.avatarURL = "";
         this.gender = "";
-        this.hometown = "";
         this.dateCreated = (new Date()).getTime();
-        this.birthdate = dateCreated;
     }
 
-    private User(String username, String email, String avatarURL, String gender, String hometown, long dateCreated, long birthdate) {
+    public User(String username, String email, String gender) {
         this.uid = "";
         this.username = username;
         this.email = email;
-        this.avatarURL = avatarURL;
         this.gender = gender;
-        this.hometown = hometown;
+        this.dateCreated = (new Date()).getTime();
+    }
+
+    private User(String username, String email, String gender, long dateCreated) {
+        this.uid = "";
+        this.username = username;
+        this.email = email;
+        this.gender = gender;
         this.dateCreated = dateCreated;
-        this.birthdate = birthdate;
     }
 
     public void setUid(String uid, Auth.UserUIDSetter setter) {
@@ -68,14 +67,6 @@ public class User {
         this.email = email;
     }
 
-    public String getAvatarURL() {
-        return avatarURL;
-    }
-
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
-    }
-
     public String getGender() {
         return gender;
     }
@@ -84,24 +75,8 @@ public class User {
         this.gender = gender;
     }
 
-    public String getHometown() {
-        return hometown;
-    }
-
-    public void setHometown(String hometown) {
-        this.hometown = hometown;
-    }
-
     public long getDateCreated() {
         return dateCreated;
-    }
-
-    public long getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(long birthdate) {
-        this.birthdate = birthdate;
     }
 
     @NonNull
@@ -111,14 +86,11 @@ public class User {
                 "uid='" + uid + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", avatarURL='" + avatarURL + '\'' +
                 ", gender='" + gender + '\'' +
-                ", hometown='" + hometown + '\'' +
                 ", dateCreated=" + dateCreated +
-                ", birthdate=" + birthdate +
                 '}';
     }
     public User copy(){
-        return new User(username, email, avatarURL, gender, hometown, dateCreated, birthdate);
+        return new User(username, email, gender, dateCreated);
     }
 }

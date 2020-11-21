@@ -8,7 +8,8 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".SignUpActivity">
+    tools:context=".SignUpActivity"
+    >
 
     <TextView
         android:layout_width="332dp"
@@ -137,8 +138,9 @@
             android:layout_marginEnd="118dp"
             android:layout_marginTop="-2dp"
             android:orientation="horizontal"
-            tools:ignore="RelativeOverlap">
-
+            tools:ignore="RelativeOverlap"
+            android:checkedButton="@id/male"
+            >
 
             <RadioButton
                 android:id="@+id/male"
@@ -169,7 +171,16 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="20sp" />
     </RelativeLayout>
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_left"
         android:layout_width="wrap_content"

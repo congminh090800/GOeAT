@@ -51,7 +51,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener, MapView.OnFirstLayoutListener {
     float mAzimuthAngleSpeed = 0.0f;
     private MapView map = null;
