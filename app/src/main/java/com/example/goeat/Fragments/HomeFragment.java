@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.goeat.DashboardActivity;
+import com.example.goeat.Place;
 import com.example.goeat.R;
+import com.example.goeat.TabActivity;
 
 public class HomeFragment extends Fragment {
     public HomeFragment(){}
@@ -38,12 +41,21 @@ public class HomeFragment extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (isFoodExist(items[position])){
                 Intent homeIntent = new Intent(getActivity(), DashboardActivity.class);
                 homeIntent.putExtra("tag",items[position]);
                 startActivity(homeIntent);
+                }else{
+                    Toast.makeText(getContext(), "GẦN ĐÂY KHÔNG CÓ LOẠI QUÁN NÀY", Toast.LENGTH_LONG).show();
+                }
             }
         });
         return rootView;
     }
-
+    public boolean isFoodExist(String tag){
+        for (Place place: TabActivity.placesList){
+            if (place.getCategories().contains(tag)) return true;
+        }
+        return false;
+    }
 }
