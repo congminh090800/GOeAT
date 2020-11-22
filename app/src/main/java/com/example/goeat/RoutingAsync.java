@@ -2,6 +2,7 @@ package com.example.goeat;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -41,9 +42,12 @@ public class RoutingAsync extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
     protected void onPostExecute(Road result) {
         MapView map=mContext.findViewById(R.id.map);
         TextView routeLen=mContext.findViewById(R.id.routeLength);
+        TextView routeInfo=mContext.findViewById(R.id.routeInfo);
         Polyline roadOverlay = RoadManager.buildRoadOverlay(result, Color.parseColor("#24B2B4"),20);
         roadOverlay.getOutlinePaint().setStrokeCap(Paint.Cap.ROUND);
         routeLen.setText("Distance: "+Integer.toString((int)Math.round(roadOverlay.getDistance()/1000d))+" km");
+        SharedPreferences sharedPref = mContext.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+        routeInfo.setText(sharedPref.getString("mRouteInfo",""));
         map.getOverlays().add(0,roadOverlay);
     }
 }

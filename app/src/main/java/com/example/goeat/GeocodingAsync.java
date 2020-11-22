@@ -17,10 +17,20 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +50,7 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     protected void onPreExecute() {
         super.onPreExecute();
         if (ContextCompat.checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 500, 0.0f, this);
+            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 1, 0.0f, this);
         }
     }
     @Override
@@ -66,12 +76,11 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
             return null;
         }
         else {
-            String city="",province="",district="";
-            if (address.getCountryName()!=null) city=address.getCountryName();
-            if (address.getAdminArea()!=null) province=address.getAdminArea();
-            if (address.getSubAdminArea()!=null) district=address.getSubAdminArea();
-
-            editor.putString("curAddress",city+"|"+province+"|"+district);
+            String district="";
+            if (address.getSubAdminArea()!=null) {
+                district=address.getSubAdminArea();
+            }
+            editor.putString("curAddress",district);
             editor=putDouble(editor,"mStartLadtitude",location.getLatitude());
             editor=putDouble(editor,"mStartLongtitude",location.getLongitude());
             editor.apply();

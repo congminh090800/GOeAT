@@ -2,6 +2,7 @@ package com.example.goeat.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        String items[] = {"Rice","Noodle","Bakery","Barbeque","Hotpot","Seafood","StreetFood","Soup","Sandwich","Restaurant","Vegetarian","Coffee/Dessert"};
+        final String items[] = {"Rice","Noodle","Bakery","Barbeque","Hotpot","Seafood","Street food","Soup","Sandwich","Restaurant","Vegetarian","Coffee/Dessert"};
         int img_id[] = {R.drawable.rice,R.drawable.noodle,R.drawable.bakery,R.drawable.bbq,R.drawable.hotpot,R.drawable.seafood,R.drawable.street_food,R.drawable.soup,R.drawable.sandwich,R.drawable.restaurant,R.drawable.veggie,R.drawable.coffee_dessert};
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ListView lv = (ListView)rootView.findViewById(R.id.home_list_View);
@@ -38,7 +39,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent homeIntent = new Intent(getActivity(), DashboardActivity.class);
-
+                homeIntent.putExtra("tag",items[position]);
                 startActivity(homeIntent);
             }
         });

@@ -31,7 +31,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".DashboardActivity"
-            android:parentActivityName=".LoginActivity"
+            android:parentActivityName=".TabActivity"
             android:theme="@style/AppTheme">
         </activity>
         <activity

@@ -1,6 +1,9 @@
 package com.example.goeat;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.goeat.Fragments.HomeFragment;
 import com.example.goeat.Fragments.HistoryFragment;
@@ -17,6 +20,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +41,9 @@ public class TabActivity extends AppCompatActivity {
     private HistoryFragment historyFragment;
     private ProfileFragment profileFragment;
     private GeocodingAsync myGeocoding;
+    private DatabaseReference mDatabase;
+    private String mDistrict;
+    public static ArrayList<Place> placesList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +55,8 @@ public class TabActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tab_layout);
-        myGeocoding=new GeocodingAsync(TabActivity.this);
-        myGeocoding.execute();
-
+        placesList=new ArrayList<Place>();
+        getNearby();
         homeFragment = new HomeFragment();
         nearbyFragment = new NearbyFragment();
         historyFragment = new HistoryFragment();
@@ -99,7 +111,34 @@ public class TabActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+    }
+    public void getNearby(){
+        mDistrict="";
+        placesList.clear();
         myGeocoding=new GeocodingAsync(TabActivity.this);
         myGeocoding.execute();
+        do{
+            SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+            mDistrict=sharedPref.getString("curAddress","");
+        }while (mDistrict=="");
+
+        if (mDistrict.contains("Quận ")){
+            mDistrict=mDistrict.replace("Quận","District");
+        }
+        mDistrict=mDistrict.replace(" ","");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils.removeAccent(mDistrict)).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data: snapshot.getChildren()) {
+                    placesList.add(data.getValue(Place.class));
+                    //Log.d("database",placesList.size()+": "+placesList.get(placesList.size()-1).getString());
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("test","failed");
+            }
+        });
     }
 }

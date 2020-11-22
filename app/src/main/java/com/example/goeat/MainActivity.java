@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 
 import android.location.LocationListener;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -240,7 +241,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mLadtitude=getDouble(sharedPref,"mStartLadtitude",0);
         mLongtitude=getDouble(sharedPref,"mStartLongtitude",0);
         mStartPoint=new GeoPoint(mLadtitude,mLongtitude);
-        mEndPoint=new GeoPoint(10.8759, 106.7990);
+        mLadtitude=getDouble(sharedPref,"mEndLadtitude",0);
+        mLongtitude=getDouble(sharedPref,"mEndLongtitude",0);
+        mEndPoint=new GeoPoint(mLadtitude,mLongtitude);
         if (mStartPoint==null || mEndPoint==null) return;
         waypoints.add(mStartPoint);
         waypoints.add(mEndPoint);
@@ -293,5 +296,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onFirstLayout(View v, int left, int top, int right, int bottom) {
         if (mInitialBoundingBox != null)
             map.zoomToBoundingBox(mInitialBoundingBox, false);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
