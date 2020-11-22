@@ -9,6 +9,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class Place{
 
     public Place(){
     }
+
     public String getString(){
         return name+" "+address+" "+phones.get(0)+" "+categories.get(0)+" "+photo+" "+begin+" "+end+" "+price_range.getString()+position.getString();
     }
@@ -53,9 +56,7 @@ public class Place{
     public Position getPosition() {
         return position;
     }
-    public PriceRange getPrice_range() {
-        return price_range;
-    }
+    public PriceRange getPrice_range() { return price_range;}
 }
 
 

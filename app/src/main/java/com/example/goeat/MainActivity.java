@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -30,12 +31,12 @@ import android.location.LocationListener;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.goeat.auth.ScaleBitmap;
+import com.google.firebase.BuildConfig;
 
+import org.jetbrains.annotations.NotNull;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
@@ -49,7 +50,7 @@ import org.osmdroid.views.overlay.mylocation.DirectedLocationOverlay;
 
 import java.io.File;
 import java.util.ArrayList;
-
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener, MapView.OnFirstLayoutListener {
     float mAzimuthAngleSpeed = 0.0f;
@@ -58,25 +59,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected LocationManager mLocationManager;
     protected SensorManager mSensorManager;
     protected Sensor mOrientation;
-    private double mLadtitude,mLongtitude;
     private GeoPoint mStartPoint,mEndPoint;
-    private Marker startMarker,endMarker;
-    private ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>(2);
-    private ImageButton locateBtn;
+    private ArrayList<GeoPoint> waypoints = new ArrayList<>(2);
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context ctx = getApplicationContext();
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        getSupportActionBar().setTitle("");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
         setContentView(R.layout.activity_main);
-        locateBtn=(ImageButton)findViewById(R.id.locateBtn);
-        map = (MapView) findViewById(R.id.map);
+        ImageButton locateBtn = findViewById(R.id.locateBtn);
+        map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setTilesScaledToDpi(true);
 
@@ -99,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         getRoadAsync();
         myLocationOverlay = new DirectedLocationOverlay(this);
         Drawable myLocationDrawable= ResourcesCompat.getDrawable(getResources(),R.mipmap.current_location_icon,null);
+        assert myLocationDrawable != null;
         Bitmap myLocationBitmap=((BitmapDrawable)myLocationDrawable).getBitmap();
         myLocationBitmap=ScaleBitmap.scaleDown(myLocationBitmap,130,true);
         myLocationOverlay.setDirectionArrow(myLocationBitmap);
@@ -150,9 +150,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             mLocationManager.removeUpdates(this);
-        }
         mSensorManager.unregisterListener(this);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
@@ -170,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private final NetworkLocationIgnorer mIgnorer = new NetworkLocationIgnorer();
     long mLastTime = 0; // milliseconds
     double mSpeed = 0.0; // km/h
-    @Override public void onLocationChanged(final Location pLoc) {
+    @Override public void onLocationChanged(@NotNull final Location pLoc) {
         Log.d("currentProvider",pLoc.getProvider());
         //This should ignore network provider
         long currentTime = System.currentTimeMillis();
@@ -193,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Log.d("currentLocation","current:"+newLocation.getLatitude()+" "+newLocation.getLongitude());
         if (prevLocation!=null && pLoc.getProvider().equals(LocationManager.GPS_PROVIDER)){
             mSpeed = pLoc.getSpeed() * 3.6;
-            //TODO: check if speed is not too small
+            /* TODO: check if speed is not too small */
             if (mSpeed >= 0.1){
                 mAzimuthAngleSpeed = pLoc.getBearing();
 
@@ -202,9 +201,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         map.invalidate();
     }
-    @Override public void onProviderDisabled(String provider) {}
+    @Override public void onProviderDisabled(@NotNull String provider) {}
 
-    @Override public void onProviderEnabled(String provider) {}
+    @Override public void onProviderEnabled(@NotNull String provider) {}
 
     @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
 
@@ -214,47 +213,42 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     static float mAzimuthOrientation = 0.0f;
-    @Override public void onSensorChanged(SensorEvent event) {
-        switch (event.sensor.getType()){
-            case Sensor.TYPE_ORIENTATION:
-                if (mSpeed < 0.1){
-					float azimuth = event.values[0];
-					if (Math.abs(azimuth-mAzimuthOrientation)>2f){
-						mAzimuthOrientation = azimuth;
-						myLocationOverlay.setBearing(mAzimuthOrientation);
-						map.invalidate();
-					}
+    @Override public void onSensorChanged(@NotNull SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) if (mSpeed < 0.1) {
+            float azimuth = event.values[0];
+            if (Math.abs(azimuth - mAzimuthOrientation) > 2f) {
+                mAzimuthOrientation = azimuth;
+                myLocationOverlay.setBearing(mAzimuthOrientation);
+                map.invalidate();
+            }
 
-                }
-                break;
-            default:
-                break;
         }
     }
     //cast long bits back to double
-    double getDouble(final SharedPreferences prefs, final String key, final double defaultValue) {
-        return Double.longBitsToDouble(prefs.getLong(key, Double.doubleToLongBits(defaultValue)));
+    double getDouble(@NotNull final SharedPreferences prefs, final String key) {
+        return Double.longBitsToDouble(prefs.getLong(key, Double.doubleToLongBits(0)));
     }
     //ROUTING SECTION
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void getRoadAsync(){
         SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
-        mLadtitude=getDouble(sharedPref,"mStartLadtitude",0);
-        mLongtitude=getDouble(sharedPref,"mStartLongtitude",0);
+        double mLadtitude=getDouble(sharedPref,"mStartLadtitude");
+        double mLongtitude=getDouble(sharedPref,"mStartLongtitude");
         mStartPoint=new GeoPoint(mLadtitude,mLongtitude);
-        mLadtitude=getDouble(sharedPref,"mEndLadtitude",0);
-        mLongtitude=getDouble(sharedPref,"mEndLongtitude",0);
+        mLadtitude=getDouble(sharedPref,"mEndLadtitude");
+        mLongtitude=getDouble(sharedPref,"mEndLongtitude");
         mEndPoint=new GeoPoint(mLadtitude,mLongtitude);
         if (mStartPoint==null || mEndPoint==null) return;
         waypoints.add(mStartPoint);
         waypoints.add(mEndPoint);
         //Draw markers
-        startMarker = new Marker(map);
+        Marker startMarker = new Marker(map);
         startMarker.setPosition(mStartPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
         startMarker.setIcon(getResources().getDrawable(R.mipmap.marker_current_location,null));
         map.getOverlays().add(startMarker);
 
-        endMarker=new Marker(map);
+        Marker endMarker = new Marker(map);
         endMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
         endMarker.setIcon(getResources().getDrawable(R.mipmap.marker_destination,null));
         endMarker.setPosition(mEndPoint);

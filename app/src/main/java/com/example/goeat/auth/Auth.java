@@ -2,6 +2,7 @@ package com.example.goeat.auth;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -176,7 +177,7 @@ public class Auth {
         return taskCompletionSource.getTask();
     }
 
-    private Task<User> loadCurrentUser() {
+    public Task<User> loadCurrentUser() {
         final TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null) {
