@@ -95,6 +95,8 @@ public class DashboardActivity extends AppCompatActivity {
         }else{
             dashboard_txtRating.setBackgroundResource(R.drawable.rating_point_low);
         }
+        if (curPlace.getRating()>=10.0){
+            dashboard_txtRating.setText("10");}
         dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
         double ratingPoint = curPlace.getRating()/2;
         ratingbar.setRating((float)ratingPoint);

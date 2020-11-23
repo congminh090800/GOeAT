@@ -16,6 +16,7 @@ import org.osmdroid.util.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 public class Place{
+    long id;
     String address;
     String begin;
     List<String> categories;
@@ -71,6 +72,9 @@ public class Place{
         int scale = (int) Math.pow(10, precision);
         double ratingP=(double) Math.round(value * scale) / scale;
         return ratingP;
+    }
+    public long getId() {
+        return id;
     }
 }
 
