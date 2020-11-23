@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.goeat.LoginActivity;
 import com.example.goeat.R;
+import com.example.goeat.User;
 import com.example.goeat.auth.Auth;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -29,14 +30,17 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mAuth = Auth.getInstance();
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        logout = v.findViewById(R.id.button);
+        mAuth = Auth.getInstance();
+        User u = mAuth.getCurrentUser();
+        logout = v.findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                Intent intent=new Intent(getActivity(), LoginActivity.class);
+                getActivity().finish();
+                startActivity(intent);
             }
         });
         return v;
