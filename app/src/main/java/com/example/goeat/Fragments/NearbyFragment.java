@@ -1,6 +1,10 @@
 package com.example.goeat.Fragments;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,29 +12,49 @@ import android.widget.ListView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.goeat.Place;
 import com.example.goeat.R;
+import com.example.goeat.TabActivity;
+
+import java.util.ArrayList;
 
 public class NearbyFragment extends Fragment {
+    RecyclerView recyclerView;
+    //View v;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     public NearbyFragment(){}
-    private ListView listview;
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        String items[] = {"Item1","Item2","Item3","Item4","Item5","Item6","Item7","Item8","Item9","Item10"};
-        String mdescription[] = {"Destination","Destination","Destination","Destination","Destination","Destination","Destination","Destination","Destination","Destination"};
-        int flags[] = {R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo, R.drawable.login_logo};
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_nearby, container, false);
-        ListView lv = (ListView)rootView.findViewById(R.id.list_View);
-        nearbyAdapter adpt = new nearbyAdapter(this.getActivity(),items,mdescription,flags);
-        lv.setAdapter(adpt);
+        recyclerView=rootView.findViewById(R.id.nearby_recyclerview);
+        nearbyAdapter nAdapter=new nearbyAdapter(getContext());
+        recyclerView.setAdapter(nAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return rootView;
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
+//
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        this.v=view;
+//        recyclerView=(RecyclerView) v.findViewById(R.id.nearby_recyclerview);
+//        nearbyAdapter nAdapter=new nearbyAdapter(getContext(), mPlaces);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        recyclerView.setAdapter(nAdapter);
+//    }
 }

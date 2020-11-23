@@ -6,6 +6,7 @@ package com.example.goeat.Fragments;
  */
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,69 +16,61 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.goeat.Place;
 import com.example.goeat.R;
+import com.example.goeat.TabActivity;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 /**
  * @author Admin
  * @date 11/19/2020
  */
 
-class nearbyAdapter extends BaseAdapter {
-    private Activity activity;
-    private String[] items;
-    private String[] rDescription;
-    private int[] flag;
-    private LayoutInflater mInflater;
-    public nearbyAdapter(Activity activity,String[] items,String[] description,int[] flag){
-        this.activity = activity;
-        this.items = items;
-        this.rDescription = description;
-        this.flag = flag;
+class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder> {
+    Context mContext;
+    nearbyAdapter(Context c){
+        mContext=c;
     }
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_nearby, container, false);
-    }
+    @NonNull
     @Override
-    public int getCount() {
-        return items.length;
+    public NearbyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v;
+        v=LayoutInflater.from(mContext).inflate(R.layout.nearby_item,parent,false);
+        NearbyViewHolder holder=new NearbyViewHolder(v);
+        return holder;
     }
 
     @Override
-    public Object getItem(int position) {
-        return items[position];
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-    static class ViewHolder{
-        TextView tvName,rDescription;
-        ImageView imgs;
-    }
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
-        LayoutInflater inflater = activity.getLayoutInflater();
-
-
-        if(view == null) {
-            view = inflater.inflate(R.layout.nearby_item,null);
-            holder = new ViewHolder();
-            holder.tvName = (TextView) view.findViewById(R.id.textView1);
-            holder.rDescription = view.findViewById(R.id.textView2);
-            holder.imgs = view.findViewById(R.id.icon);
-            view.setTag(holder);
-        }else{
-            holder = (ViewHolder) view.getTag();
+    public void onBindViewHolder(@NonNull NearbyViewHolder holder, int position) {
+        holder.nameTxt.setText(TabActivity.placesList.get(position).getName());
+        Picasso.get().load(TabActivity.placesList.get(position).getPhoto()).into(holder.foodImg);
+        holder.tagTxt.setText("");
+        for (String tag:TabActivity.placesList.get(position).getCategories()){
+            holder.tagTxt.append(tag);
+            if (tag!=TabActivity.placesList.get(position).getCategories().get(TabActivity.placesList.get(position).getCategories().size()-1)){
+                holder.tagTxt.append(", ");
+            }
         }
-        holder.tvName.setText(items[i]);
-        holder.rDescription.setText(rDescription[i]);
-        holder.imgs.setImageResource(flag[i]);
+    }
 
-        return view;
+    @Override
+    public int getItemCount() {
+        return TabActivity.placesList.size();
+    }
+
+    public static class NearbyViewHolder extends RecyclerView.ViewHolder{
+        TextView nameTxt,tagTxt;
+        ImageView foodImg;
+        public NearbyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            nameTxt=itemView.findViewById(R.id.textView1);
+            foodImg=itemView.findViewById(R.id.foodImg);
+            tagTxt=itemView.findViewById(R.id.textView3);
+        }
     }
 }
