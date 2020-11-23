@@ -1,11 +1,15 @@
 package com.example.goeat.Fragments;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroupOverlay;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,6 +71,7 @@ class homeAdapter extends BaseAdapter {
         }
         holder.tvName.setText(items[i]);
         holder.imgs.setImageResource(imgs[i]);
+
 
         return view;
     }
