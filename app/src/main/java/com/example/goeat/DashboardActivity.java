@@ -31,6 +31,7 @@ public class DashboardActivity extends AppCompatActivity {
 //    curAddress=sharedPref.getString("curAddress","Vietnam|Thành phố Hồ Chí Minh|Bình Thạnh");
     private Random mRandFoodIndex;
     private String mTag;
+    private int mIndex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +42,13 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         mRandFoodIndex=new Random();
         mTag=getIntent().getStringExtra("tag");
+        mIndex=getIntent().getIntExtra("index",-1);
         InitializeUI();
-        reRandomizeFood();
+        if (mIndex==-1){
+            reRandomizeFood();
+        }else{
+            getSelectedFood();
+        }
         //BUTTONS HANDLING
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +117,42 @@ public class DashboardActivity extends AppCompatActivity {
         editor.putString("mRouteInfo",curPlace.getAddress());
         editor.apply();
     }
+    void getSelectedFood(){
+        Place curPlace=TabActivity.placesList.get(mIndex);
+        Picasso.get().load(curPlace.getPhoto()).into(food);
+        name.setText(curPlace.getName());
+        address.setText(curPlace.getAddress());
+        tags.setText("TAGS: ");
+        for (String tag:curPlace.getCategories()){
+            tags.append(tag);
+            if (tag!=curPlace.getCategories().get(curPlace.getCategories().size()-1)){
+                tags.append(", ");
+            }
+        }
+        if( curPlace.getRating() > 7.5){
+            dashboard_txtRating.setBackgroundResource(R.drawable.rating_point);
+        }else if( curPlace.getRating() > 5){
+            dashboard_txtRating.setBackgroundResource(R.drawable.rating_point_medium);
+        }else{
+            dashboard_txtRating.setBackgroundResource(R.drawable.rating_point_low);
+        }
+        if (curPlace.getRating()>=10.0){
+            dashboard_txtRating.setText("10");}
+        dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
+        double ratingPoint = curPlace.getRating()/2;
+        ratingbar.setRating((float)ratingPoint);
+
+        phone.setText("PHONE: "+curPlace.getPhones().get(0));
+        opcl.setText("OPEN/CLOSED: "+curPlace.getBegin()+" - "+curPlace.getEnd());
+        pricerange.setText("PRICE RANGE: "+curPlace.getPrice_range().min_price+" - "+curPlace.getPrice_range().max_price+"(VND)");
+        SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor=putDouble(editor,"mEndLadtitude",curPlace.getPosition().latitude);
+        editor=putDouble(editor,"mEndLongtitude",curPlace.getPosition().longitude);
+        editor.putString("mRouteInfo",curPlace.getAddress());
+        editor.apply();
+    }
+
     //cast to get shared preferences
     SharedPreferences.Editor putDouble(final SharedPreferences.Editor edit, final String key, final double value) {
         return edit.putLong(key, Double.doubleToRawLongBits(value));

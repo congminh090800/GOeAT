@@ -7,16 +7,20 @@ package com.example.goeat.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.goeat.DashboardActivity;
 import com.example.goeat.Place;
 import com.example.goeat.R;
 import com.example.goeat.TabActivity;
@@ -42,8 +46,19 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
     @Override
     public NearbyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
-        v=LayoutInflater.from(mContext).inflate(R.layout.nearby_item,parent,false);
-        NearbyViewHolder holder=new NearbyViewHolder(v);
+        v=LayoutInflater.from(mContext.getApplicationContext()).inflate(R.layout.nearby_item,parent,false);
+        final NearbyViewHolder holder=new NearbyViewHolder(v);
+        holder.itemLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index=holder.getAdapterPosition();
+                String tag=TabActivity.placesList.get(holder.getAdapterPosition()).getCategories().get(0);
+                Intent homeIntent = new Intent(mContext, DashboardActivity.class);
+                homeIntent.putExtra("tag",tag);
+                homeIntent.putExtra("index",index);
+                mContext.startActivity(homeIntent);
+            }
+        });
         return holder;
     }
 
@@ -81,12 +96,14 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
     public static class NearbyViewHolder extends RecyclerView.ViewHolder{
         TextView nameTxt,tagTxt,ratingTxt;
         ImageView foodImg;
+        LinearLayout itemLayout;
         public NearbyViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTxt=itemView.findViewById(R.id.textView1);
             foodImg=itemView.findViewById(R.id.foodImg);
             tagTxt=itemView.findViewById(R.id.textView3);
             ratingTxt=itemView.findViewById(R.id.ratingTxt);
+            itemLayout=itemView.findViewById(R.id.itemLayout);
         }
     }
 }

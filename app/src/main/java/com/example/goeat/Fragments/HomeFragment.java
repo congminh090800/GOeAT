@@ -44,6 +44,7 @@ public class HomeFragment extends Fragment {
                 if (isFoodExist(items[position])){
                 Intent homeIntent = new Intent(getActivity(), DashboardActivity.class);
                 homeIntent.putExtra("tag",items[position]);
+                homeIntent.putExtra("index",-1);
                 startActivity(homeIntent);
                 }else{
                     Toast.makeText(getContext(), "GẦN ĐÂY KHÔNG CÓ LOẠI QUÁN NÀY", Toast.LENGTH_LONG).show();
