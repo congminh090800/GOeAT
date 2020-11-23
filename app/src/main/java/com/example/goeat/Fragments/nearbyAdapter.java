@@ -67,6 +67,9 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
         }else{
             holder.ratingTxt.setBackgroundResource(R.drawable.rating_point_low);
         }
+        if (TabActivity.placesList.get(position).getRating()>=10.0){
+            holder.ratingTxt.setText("10");
+        }else
         holder.ratingTxt.setText(String.valueOf(TabActivity.placesList.get(position).getRating()));
     }
 
