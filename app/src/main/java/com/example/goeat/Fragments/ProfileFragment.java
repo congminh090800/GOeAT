@@ -7,13 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.goeat.LoginActivity;
 import com.example.goeat.R;
 import com.example.goeat.User;
 import com.example.goeat.auth.Auth;
+import com.example.goeat.auth.Validator;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -29,7 +34,7 @@ public class ProfileFragment extends Fragment {
     TextView email;
     TextView gender;
     TextView date;
-
+    User u;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +46,7 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         mAuth = Auth.getInstance();
-        User u = mAuth.getCurrentUser();
+        u = mAuth.getCurrentUser();
         username = v.findViewById(R.id.username);
         username.append(u.getUsername());
         email = v.findViewById(R.id.email);
@@ -51,10 +56,11 @@ public class ProfileFragment extends Fragment {
         date = v.findViewById(R.id.date);
         date.append(new Date(TimeUnit.DAYS.toDays(u.getDateCreated()))+"");
 
-        changepassword = v.findViewById(R.id.logout);
+        changepassword = v.findViewById(R.id.changepassword);
         changepassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendPasswordResetEmail();
             }
         });
         logout = v.findViewById(R.id.logout);
@@ -68,5 +74,17 @@ public class ProfileFragment extends Fragment {
             }
         });
         return v;
+    }
+    private void sendPasswordResetEmail() {
+        mAuth.sendPasswordResetEmail(u.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getActivity(), "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
