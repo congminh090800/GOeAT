@@ -57,6 +57,7 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
                 holder.tagTxt.append(", ");
             }
         }
+        holder.ratingTxt.setText(String.valueOf(TabActivity.placesList.get(position).getRating()));
     }
 
     @Override
@@ -65,13 +66,14 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
     }
 
     public static class NearbyViewHolder extends RecyclerView.ViewHolder{
-        TextView nameTxt,tagTxt;
+        TextView nameTxt,tagTxt,ratingTxt;
         ImageView foodImg;
         public NearbyViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTxt=itemView.findViewById(R.id.textView1);
             foodImg=itemView.findViewById(R.id.foodImg);
             tagTxt=itemView.findViewById(R.id.textView3);
+            ratingTxt=itemView.findViewById(R.id.ratingTxt);
         }
     }
 }
