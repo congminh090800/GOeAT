@@ -8,7 +8,7 @@
     tools:context=".DashboardActivity">
 
     <ImageButton
-        android:id="@+id/rerollBtn"
+        android:id="@+id/goBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -16,14 +16,14 @@
         android:background="@drawable/round_bt"
         android:elevation="15dp"
         android:padding="10dp"
-        android:src="@drawable/ic_baseline_autorenew_24"
+        android:src="@drawable/ic_baseline_restaurant_menu_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.36"
-        app:layout_constraintStart_toEndOf="@+id/goBtn"
+        app:layout_constraintStart_toEndOf="@+id/rerollBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/goBtn"
+        android:id="@+id/rerollBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -31,10 +31,10 @@
         android:background="@drawable/round_bt"
         android:elevation="15dp"
         android:padding="10dp"
-        android:src="@drawable/ic_baseline_restaurant_menu_24"
+        android:src="@drawable/ic_baseline_autorenew_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rerollBtn" />
+        app:layout_constraintTop_toTopOf="@+id/goBtn" />
 
 
     <ImageView
