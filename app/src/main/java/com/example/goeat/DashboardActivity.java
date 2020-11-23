@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,8 @@ import java.util.Random;
 public class DashboardActivity extends AppCompatActivity {
     private ImageButton goBtn,rerollBtn;
     private ImageView food;
-    private TextView name,address,tags,phone,opcl,pricerange;
+    private TextView name,address,tags,phone,opcl,pricerange,dashboard_txtRating;
+    private RatingBar ratingbar;
 //    //sử dụng SHARED PREFERENCES để lấy địa chỉ hiện tại ở bất cứ class nào, ví dụ bên dưới
 //    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
 //    curAddress=sharedPref.getString("curAddress","Vietnam|Thành phố Hồ Chí Minh|Bình Thạnh");
@@ -48,6 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         rerollBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
     void InitializeUI(){
+        ratingbar = (RatingBar) findViewById(R.id.ratingBar);
         goBtn=findViewById(R.id.goBtn);
         rerollBtn=findViewById(R.id.rerollBtn);
         food=findViewById(R.id.food);
@@ -65,6 +69,7 @@ public class DashboardActivity extends AppCompatActivity {
         phone=findViewById(R.id.phone);
         opcl=findViewById(R.id.opcl);
         pricerange=findViewById(R.id.pricerange);
+        dashboard_txtRating=findViewById(R.id.dashboard_txtRating);
     }
     void reRandomizeFood(){
         int foodIndex;
@@ -82,6 +87,17 @@ public class DashboardActivity extends AppCompatActivity {
                 tags.append(", ");
             }
         }
+        if( curPlace.getRating() > 7.5){
+            dashboard_txtRating.setBackgroundResource(R.drawable.rating_point);
+        }else if( curPlace.getRating() > 5){
+            dashboard_txtRating.setBackgroundResource(R.drawable.rating_point_medium);
+        }else{
+            dashboard_txtRating.setBackgroundResource(R.drawable.rating_point_low);
+        }
+        dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
+        double ratingPoint = curPlace.getRating()/2;
+        ratingbar.setRating((float)ratingPoint);
+
         phone.setText("PHONE: "+curPlace.getPhones().get(0));
         opcl.setText("OPEN/CLOSED: "+curPlace.getBegin()+" - "+curPlace.getEnd());
         pricerange.setText("PRICE RANGE: "+curPlace.getPrice_range().min_price+" - "+curPlace.getPrice_range().max_price+"(VND)");

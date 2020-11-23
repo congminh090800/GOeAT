@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,125 +7,192 @@
     android:orientation="vertical"
     tools:context=".DashboardActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/rerollBtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        >
-        <ImageView
-            android:id="@+id/food"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/bakery">
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="176dp"
+        android:background="@drawable/round_bt"
+        android:elevation="15dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_baseline_autorenew_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.36"
+        app:layout_constraintStart_toEndOf="@+id/goBtn"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        </ImageView>
-        <ImageButton
-            android:id="@+id/goBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/food"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="-50dp"
-            android:background="@drawable/round_bt"
-            android:elevation="10dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_baseline_restaurant_menu_24" />
-        <ImageButton
-            android:id="@+id/rerollBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/food"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="100dp"
-            android:layout_marginTop="-50dp"
-            android:background="@drawable/round_bt"
-            android:elevation="10dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_baseline_autorenew_24" />
-    </RelativeLayout>
+    <ImageButton
+        android:id="@+id/goBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="150dp"
+        android:background="@drawable/round_bt"
+        android:elevation="15dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_baseline_restaurant_menu_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rerollBtn" />
+
+
+    <ImageView
+        android:id="@+id/food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@drawable/bakery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ImageView>
 
     <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        android:layout_marginTop="20dp"
         android:background="@drawable/btn_login"
-        android:elevation="10dp">
+        android:elevation="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/food">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="20dp"
             android:text="Name"
-            android:textStyle="bold"
             android:textAllCaps="true"
             android:textSize="30dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="5dp"
-            />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="5dp"
             android:text="Address"
-            android:textStyle="italic"
             android:textAllCaps="true"
             android:textSize="20dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="10dp"
-            />
+            android:textStyle="italic" />
+
         <TextView
             android:id="@+id/tags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="15dp"
             android:text="Tags"
-            android:textStyle="italic|bold"
             android:textAllCaps="true"
             android:textSize="15dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="5dp"
-            />
+            android:textStyle="italic|bold" />
+
         <TextView
             android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp"
             android:text="Phone number:"
-            android:textStyle="bold"
             android:textAllCaps="true"
             android:textSize="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="5dp"
-            />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/opcl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
             android:text="Open/Close time"
-            android:textStyle="bold"
             android:textAllCaps="true"
             android:textSize="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/pricerange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
             android:text="Price range:"
-            android:textStyle="bold"
             android:textAllCaps="true"
             android:textSize="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="20dp"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:elevation="15dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="15dp"
+            app:cardCornerRadius="15dp"
+           >
+        <TextView
+            android:id="@+id/dashboard_txtRating"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="68dp"
+            android:background="@drawable/rating_point"
+            android:fontFamily="@font/amaranth"
+            android:gravity="center"
+            android:text="5"
+            android:layout_marginVertical="10dp"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#fffbd2"
+            android:textSize="27dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_gravity="right"
+            android:layout_marginEnd="100dp"
+            android:numStars="5"
+            android:paddingTop="23dp"
+            android:progressDrawable="@drawable/ratingbar"
+            android:isIndicator="true"
+            android:scaleX="1.75"
+            android:scaleY="1.75"
+            android:stepSize="0.01"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.398"
+            app:layout_constraintStart_toEndOf="@+id/ratingTxt"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
