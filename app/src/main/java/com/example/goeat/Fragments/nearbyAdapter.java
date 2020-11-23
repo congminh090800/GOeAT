@@ -106,4 +106,5 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
             itemLayout=itemView.findViewById(R.id.itemLayout);
         }
     }
+
 }

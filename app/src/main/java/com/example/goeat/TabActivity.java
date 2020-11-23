@@ -1,7 +1,13 @@
 package com.example.goeat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.Tasks;
@@ -30,18 +37,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.osmdroid.util.GeoPoint;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
 public class TabActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private HomeFragment homeFragment;
     private NearbyFragment nearbyFragment;
     private HistoryFragment historyFragment;
@@ -53,10 +64,23 @@ public class TabActivity extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter;
     private ProgressBar loading_spinner;
     private Handler handler;
+
+    public FragmentRefreshListener getFragmentRefreshListener() {
+        return fragmentRefreshListener;
+    }
+
+    public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) {
+        this.fragmentRefreshListener = fragmentRefreshListener;
+    }
+    private FragmentRefreshListener fragmentRefreshListener;
+    public interface FragmentRefreshListener{
+        void onRefresh();
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         handler = new Handler();
-        getNearby();
         placesList=new ArrayList<Place>();
+        getNearby();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
         toolbar = findViewById(R.id.toolbar);
@@ -64,7 +88,8 @@ public class TabActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         loading_spinner=findViewById(R.id.loading_spinner);
         loading_spinner.setVisibility(View.VISIBLE);
-
+        mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.alizarin_red,R.color.peter_blue);
         handler.postDelayed(new Runnable(){
             @Override
             public void run(){
@@ -89,8 +114,15 @@ public class TabActivity extends AppCompatActivity {
 
                 loading_spinner.setVisibility(View.GONE);
             }
-        }, 3000);
-
+        }, 1000);
+        mSwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        myUpdateOperation();
+                    }
+                }
+        );
     }
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -128,31 +160,48 @@ public class TabActivity extends AppCompatActivity {
         super.onResume();
     }
     public void getNearby(){
-        mDistrict="";
         myGeocoding=new GeocodingAsync(TabActivity.this);
         myGeocoding.execute();
-        do{
-            SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
-            mDistrict=sharedPref.getString("curAddress","");
-        }while (mDistrict=="");
-
-        if (mDistrict.contains("Quận ")){
-            mDistrict=mDistrict.replace("Quận","District");
-        }
-        mDistrict=mDistrict.replace(" ","");
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils.removeAccent(mDistrict)).addValueEventListener(new ValueEventListener() {
+        mDistrict="";
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                placesList.clear();
-                for (DataSnapshot data: snapshot.getChildren()) {
-                    placesList.add(data.getValue(Place.class));
+            public void run() {
+                do{
+                    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+                    mDistrict=sharedPref.getString("curAddress","");
+                }while (mDistrict=="");
+                if (mDistrict.contains("Quận ")){
+                    mDistrict=mDistrict.replace("Quận","District");
                 }
+                mDistrict=mDistrict.replace(" ","");
+                mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils.removeAccent(mDistrict)).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        placesList.clear();
+                        for (DataSnapshot data: snapshot.getChildren()) {
+                            placesList.add(data.getValue(Place.class));
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("test","failed");
+                    }
+                });
             }
+        },1500);
+    }
+    public void myUpdateOperation(){
+        int timer=2000;
+        getNearby();
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("test","failed");
+            public void run() {
+                if(getFragmentRefreshListener()!=null){
+                    getFragmentRefreshListener().onRefresh();
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
-        });
+        },timer);
     }
 }

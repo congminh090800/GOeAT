@@ -41,21 +41,18 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     protected void onPreExecute() {
         super.onPreExecute();
         if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 500, 0.0f, this);
+            mLocationManager.requestLocationUpdates(mLocationManager.GPS_PROVIDER, 1, 0.0f, this);
     }
     @Override
     protected Address doInBackground(Void... voids) {
         Location location = null;
         Address address=null;
         mLastime= currentTimeMillis();
-        while(currentTimeMillis()-mLastime<=2000) {
             if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location == null)
                     location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
-            mLocationManager.removeUpdates(this);
-        }
         SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         final GeoPoint currentPoint = new GeoPoint(location);

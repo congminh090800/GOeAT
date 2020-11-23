@@ -19,6 +19,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -49,7 +51,10 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.DirectedLocationOverlay;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener, MapView.OnFirstLayoutListener {
@@ -80,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         map.setTilesScaledToDpi(true);
 
         map.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
-        map.getOverlayManager().getTilesOverlay().setLoadingBackgroundColor(Color.parseColor("#00af54"));
-        map.getOverlayManager().getTilesOverlay().setLoadingLineColor(Color.parseColor("#50c34c"));
+        map.getOverlayManager().getTilesOverlay().setLoadingBackgroundColor(Color.parseColor("#24b2b4"));
+        map.getOverlayManager().getTilesOverlay().setLoadingLineColor(Color.parseColor("#ffffff"));
         map.setMaxZoomLevel(21.0);
         map.setMinZoomLevel(3.0);
         map.setMultiTouchControls(true);
@@ -184,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         GeoPoint newLocation = new GeoPoint(pLoc);
             //we get the location for the first time:
             myLocationOverlay.setEnabled(true);
-
         GeoPoint prevLocation = myLocationOverlay.getLocation();
         myLocationOverlay.setLocation(newLocation);
         mStartPoint=newLocation;
