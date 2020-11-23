@@ -51,6 +51,7 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
         Picasso.get().load(TabActivity.placesList.get(position).getPhoto()).into(holder.foodImg);
         holder.tagTxt.setText("");
         for (String tag:TabActivity.placesList.get(position).getCategories()){
+
             holder.tagTxt.append(tag);
             if (tag!=TabActivity.placesList.get(position).getCategories().get(TabActivity.placesList.get(position).getCategories().size()-1)){
                 holder.tagTxt.append(", ");

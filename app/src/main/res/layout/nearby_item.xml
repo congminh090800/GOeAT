@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardElevation="7dp"
+    android:layout_margin="8dp"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="16dp"
-    tools:context="Fragments.nearbyAdapter">
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    >
 
     <ImageView
         android:id="@+id/foodImg"
         android:layout_width="150dp"
-        android:layout_height="80dp"
+        android:layout_height="110dp"
         android:adjustViewBounds="true" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:weightSum="10">
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_weight="8"
             android:orientation="vertical">
 
@@ -28,20 +36,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"
+                android:layout_marginVertical="5dp"
                 android:text="Main title"
+                android:paddingLeft="10dp"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold" />
-            <TextView
-                android:id="@+id/textView3"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="Tags"
-                android:textStyle="italic"
-                android:textColor="#a9a9a9"
-                android:textSize="12sp" />
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Tags: "
+                    android:textSize="16sp"
+                    android:paddingHorizontal="17dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="7dp"
+                    android:textColor="#000000"
+                    android:background="@drawable/ic_baseline_label_24"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -49,6 +72,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="2"
+            android:layout_marginTop="25dp"
             android:background="@drawable/rating_point"
             android:fontFamily="@font/amaranth"
             android:gravity="center"
@@ -57,7 +81,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF"
             android:textSize="24dp"
-            android:textStyle="bold|italic" />
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>
+</androidx.cardview.widget.CardView>
