@@ -25,6 +25,8 @@ public class Place{
     String photo;
     Position position;
     PriceRange price_range;
+    double Rating;
+    int TotalReviews;
 
     public Place(){
     }
@@ -57,6 +59,18 @@ public class Place{
         return position;
     }
     public PriceRange getPrice_range() { return price_range;}
+
+    public double getRating() {
+        return round(Rating,1);
+    }
+
+    public int getTotalReviews() {
+        return TotalReviews;
+    }
+    private static double round (double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
 }
 
 

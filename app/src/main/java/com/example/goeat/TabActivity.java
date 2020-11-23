@@ -52,7 +52,9 @@ public class TabActivity extends AppCompatActivity {
     public static ArrayList<Place> placesList;
     ViewPagerAdapter viewPagerAdapter;
     private ProgressBar loading_spinner;
+    private Handler handler;
     protected void onCreate(Bundle savedInstanceState) {
+        handler = new Handler();
         getNearby();
         placesList=new ArrayList<Place>();
         super.onCreate(savedInstanceState);
@@ -62,8 +64,7 @@ public class TabActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         loading_spinner=findViewById(R.id.loading_spinner);
         loading_spinner.setVisibility(View.VISIBLE);
-        
-        Handler handler = new Handler();
+
         handler.postDelayed(new Runnable(){
             @Override
             public void run(){
@@ -89,6 +90,7 @@ public class TabActivity extends AppCompatActivity {
                 loading_spinner.setVisibility(View.GONE);
             }
         }, 3000);
+
     }
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {
