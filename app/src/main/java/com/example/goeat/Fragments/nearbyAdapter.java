@@ -7,6 +7,7 @@ package com.example.goeat.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.example.goeat.Place;
 import com.example.goeat.R;
 import com.example.goeat.TabActivity;
+import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
@@ -56,6 +58,14 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
             if (tag!=TabActivity.placesList.get(position).getCategories().get(TabActivity.placesList.get(position).getCategories().size()-1)){
                 holder.tagTxt.append(", ");
             }
+        }
+        ;
+        if(TabActivity.placesList.get(position).getRating() > 7.5){
+            holder.ratingTxt.setBackgroundResource(R.drawable.rating_point);
+        }else if(TabActivity.placesList.get(position).getRating() > 5){
+            holder.ratingTxt.setBackgroundResource(R.drawable.rating_point_medium);
+        }else{
+            holder.ratingTxt.setBackgroundResource(R.drawable.rating_point_low);
         }
         holder.ratingTxt.setText(String.valueOf(TabActivity.placesList.get(position).getRating()));
     }
