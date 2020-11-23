@@ -8,6 +8,21 @@
     tools:context=".DashboardActivity">
 
     <ImageButton
+        android:id="@+id/commentBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/round_bt"
+        android:backgroundTint="#24b2b4"
+        android:elevation="15dp"
+        android:padding="15dp"
+        android:src="@drawable/ic_comment"
+        app:layout_constraintBottom_toTopOf="@+id/ratingLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
         android:id="@+id/goBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +36,6 @@
         app:layout_constraintHorizontal_bias="0.36"
         app:layout_constraintStart_toEndOf="@+id/rerollBtn"
         app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/rerollBtn"
         android:layout_width="wrap_content"
@@ -137,13 +151,13 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:elevation="15dp"
         android:orientation="vertical"
+        android:id="@+id/ratingLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
