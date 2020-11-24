@@ -44,6 +44,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -97,10 +98,12 @@ public class TabActivity extends AppCompatActivity {
             public void run(){
                 viewPager = findViewById(R.id.viewpager);
                 tabLayout = findViewById(R.id.tab_layout);
+
                 homeFragment = new HomeFragment();
                 nearbyFragment = new NearbyFragment();
                 historyFragment = new HistoryFragment();
                 profileFragment = new ProfileFragment();
+
                 viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
                 viewPagerAdapter.addFragment(homeFragment, "");
                 viewPagerAdapter.addFragment(nearbyFragment, "");
@@ -113,6 +116,21 @@ public class TabActivity extends AppCompatActivity {
                 tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_near_me_24);
                 tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_history_24);
                 tabLayout.getTabAt(3).setIcon(R.drawable.ic_baseline_person_24);
+                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        if (tab.getPosition()==1) homeFragment.scrollToTop();
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
 
                 loading_spinner.setVisibility(View.GONE);
             }

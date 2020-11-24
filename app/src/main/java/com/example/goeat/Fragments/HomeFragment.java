@@ -27,10 +27,10 @@ import com.example.goeat.DashboardActivity;
 import com.example.goeat.Place;
 import com.example.goeat.R;
 import com.example.goeat.TabActivity;
+import com.google.android.material.tabs.TabLayout;
 
 public class HomeFragment extends Fragment {
     public HomeFragment(){}
-    private ListView listview;
     private SwipeRefreshLayout srl;
     private ListView lv;
     @Override
@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         final String items[] = {"Rice","Noodle","Bakery","Barbeque","Hotpot","Seafood","Street food","Soup","Sandwich","Restaurant","Vegetarian","Coffee/Dessert"};
         int img_id[] = {R.drawable.rice,R.drawable.noodle,R.drawable.bakery,R.drawable.bbq,R.drawable.hotpot,R.drawable.seafood,R.drawable.street_food,R.drawable.soup,R.drawable.sandwich,R.drawable.restaurant,R.drawable.veggie,R.drawable.coffee_dessert};
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         lv = (ListView)rootView.findViewById(R.id.home_list_View);
         srl=getActivity().findViewById(R.id.swipeRefresh);
         homeAdapter adpt = new homeAdapter(this.getActivity(),items,img_id);
@@ -84,5 +84,7 @@ public class HomeFragment extends Fragment {
         }
         return false;
     }
-
+    public void scrollToTop(){
+        lv.setSelection(0);
+    }
 }

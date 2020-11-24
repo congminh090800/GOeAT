@@ -68,6 +68,7 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         else {
             if (address.getSubAdminArea()!=null) {
                 district=address.getSubAdminArea();
+                Log.d("test",district);
                 editor.putString("curAddress",district);
             }
             editor=putDouble(editor,"mStartLadtitude",location.getLatitude());

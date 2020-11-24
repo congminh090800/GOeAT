@@ -28,6 +28,7 @@ import com.example.goeat.TabActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NearbyFragment extends Fragment {
     RecyclerView recyclerView;
@@ -66,6 +67,7 @@ public class NearbyFragment extends Fragment {
         updateOperation();
     }
     public void updateOperation(){
+        Collections.shuffle(TabActivity.placesList);
         nearbyAdapter nAdapter=new nearbyAdapter(getActivity());
         recyclerView.setAdapter(nAdapter);
         nAdapter.notifyDataSetChanged();
