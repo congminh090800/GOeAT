@@ -114,7 +114,7 @@ public class TabActivity extends AppCompatActivity {
 
                 loading_spinner.setVisibility(View.GONE);
             }
-        }, 1000);
+        }, 1500);
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -160,9 +160,9 @@ public class TabActivity extends AppCompatActivity {
         super.onResume();
     }
     public void getNearby(){
+        mDistrict="";
         myGeocoding=new GeocodingAsync(TabActivity.this);
         myGeocoding.execute();
-        mDistrict="";
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

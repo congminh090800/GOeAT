@@ -47,12 +47,12 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     protected Address doInBackground(Void... voids) {
         Location location = null;
         Address address=null;
-        mLastime= currentTimeMillis();
             if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location == null)
                     location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
+
         SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         final GeoPoint currentPoint = new GeoPoint(location);
