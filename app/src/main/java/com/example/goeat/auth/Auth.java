@@ -6,7 +6,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.goeat.Place;
 import com.example.goeat.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -20,12 +22,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class Auth {
@@ -230,4 +240,61 @@ public class Auth {
                 });
         return taskCompletionSource.getTask();
     }
+
+    public void updateHistory(long placeID, String district){
+        final long id = placeID;
+        final String d = district;
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getAndPost(id, d);
+            }
+        });
+        thread.start();
+    }
+
+    private void getAndPost(final long placeID, final String district){
+        if (currentUser == null) {
+            return;
+        }
+        databaseReference.child("history").child(currentUser.getUid()).child(String.valueOf(placeID)).child("timestamp").getRef()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Long> ts = new ArrayList<>();
+                        for (DataSnapshot child: snapshot.getChildren()) {
+                            ts.add(child.getValue(Long.class));
+                        }
+                        PlaceID pi = new PlaceID(district, ts);
+                        pi.timestamp.add(new Date().getTime());
+                        post(pi, placeID);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("History", "Error: " + error.getMessage());
+                    }
+                });
+    }
+
+    private void post(PlaceID pi, long placeID){
+        databaseReference.child("history").child(currentUser.getUid()).child(String.valueOf(placeID)).setValue(pi);
+    }
+
+    @IgnoreExtraProperties
+    public static class PlaceID{
+        public String district;
+        public List<Long> timestamp;
+
+        public PlaceID(String district, List<Long> timestamp) {
+            this.district = district;
+            this.timestamp = timestamp;
+        }
+
+        public PlaceID(){
+        }
+    }
 }
+
+
+
