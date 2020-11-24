@@ -47,12 +47,13 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     protected Address doInBackground(Void... voids) {
         Location location = null;
         Address address=null;
-        mLastime= currentTimeMillis();
-            if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        String district="";
+        if (checkSelfPermission(contextParent, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLastime= currentTimeMillis();
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location == null)
                     location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
+        }
         SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         final GeoPoint currentPoint = new GeoPoint(location);
@@ -62,16 +63,14 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
             e.printStackTrace();
         }
 
-        if (currentPoint==null) {
-            Log.d("Geocoding:","location is null");
+        if (address==null) {
             return null;
         }
         else {
-            String district="";
             if (address.getSubAdminArea()!=null) {
                 district=address.getSubAdminArea();
+                editor.putString("curAddress",district);
             }
-            editor.putString("curAddress",district);
             editor=putDouble(editor,"mStartLadtitude",location.getLatitude());
             editor=putDouble(editor,"mStartLongtitude",location.getLongitude());
             editor.apply();
@@ -92,7 +91,7 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
     }
 
     public Address getAddress(@NotNull GeoPoint p) throws IOException {
-        Geocoder geocoder = new Geocoder(contextParent, Locale.US);
+        Geocoder geocoder = new Geocoder(contextParent);
         //String theAddress;
         double dLatitude = p.getLatitude();
         double dLongitude = p.getLongitude();

@@ -10,7 +10,9 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -105,8 +107,8 @@ public class TabActivity extends AppCompatActivity {
                 viewPagerAdapter.addFragment(historyFragment, "");
                 viewPagerAdapter.addFragment(profileFragment, "");
                 viewPager.setAdapter(viewPagerAdapter);
-                tabLayout.setupWithViewPager(viewPager);
 
+                tabLayout.setupWithViewPager(viewPager);
                 tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_home_24);
                 tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_near_me_24);
                 tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_history_24);
@@ -114,7 +116,7 @@ public class TabActivity extends AppCompatActivity {
 
                 loading_spinner.setVisibility(View.GONE);
             }
-        }, 1000);
+        }, 1500);
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -126,7 +128,6 @@ public class TabActivity extends AppCompatActivity {
     }
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {
-
         private List<Fragment> fragments = new ArrayList<>();
         private List<String> fragmentTitle = new ArrayList<>();
         public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
