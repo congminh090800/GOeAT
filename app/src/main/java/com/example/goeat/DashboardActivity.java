@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Rating;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroupOverlay;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
@@ -36,13 +40,17 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageButton goBtn,rerollBtn,commentBtn;
     private ImageView food;
     private TextView name,address,tags,phone,opcl,pricerange,dashboard_txtRating;
-    private RatingBar ratingbar;
+    private RatingBar ratingbar,popUpRatingBar;
+    private Button submit;
 //    //sử dụng SHARED PREFERENCES để lấy địa chỉ hiện tại ở bất cứ class nào, ví dụ bên dưới
 //    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
 //    curAddress=sharedPref.getString("curAddress","Vietnam|Thành phố Hồ Chí Minh|Bình Thạnh");
     private Random mRandFoodIndex;
     private String mTag;
     private int mIndex;
+    int foodIndex=0;
+    //database section
+    private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
         //UI INIT
         setContentView(R.layout.activity_dashboard);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mRandFoodIndex=new Random();
         mTag=getIntent().getStringExtra("tag");
         mIndex=getIntent().getIntExtra("index",-1);
@@ -96,12 +105,16 @@ public class DashboardActivity extends AppCompatActivity {
         ViewGroupOverlay overlay = parent.getOverlay();
         overlay.clear();
     }
+
     public void onButtonShowPopupWindow(View v) {
 
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
 
         View popupView = inflater.inflate(R.layout.popup_comment, null);
+        submit = popupView.findViewById(R.id.submitRating);
+        popUpRatingBar = popupView.findViewById(R.id.popUpRating);
+
 
         final ViewGroup root = (ViewGroup)getWindow().getDecorView().getRootView();
         // create the popup window
@@ -115,17 +128,33 @@ public class DashboardActivity extends AppCompatActivity {
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window tolken
         popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
+                float PopUpRating = popUpRatingBar.getRating();
+                Place curPlace=TabActivity.placesList.get(foodIndex);
+                int newTotalReviews=curPlace.getTotalReviews()+1;
+                double newRating=(curPlace.getRating()*curPlace.getTotalReviews()+PopUpRating*2)/newTotalReviews;
+                curPlace.setTotalReviews(newTotalReviews);
+                curPlace.setRating(newRating);
+                dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
+                ratingbar.setRating((float)curPlace.getRating()/2);
+                SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+                String mDistrict=sharedPref.getString("curAddress","");
+                if (mDistrict.contains("Quận ")){
+                    mDistrict=mDistrict.replace("Quận","District");
+                }
+                mDistrict=mDistrict.replace(" ","");
+                DatabaseReference foodDb=mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils
+                        .removeAccent(mDistrict)).child(String.valueOf(curPlace.getId()));
+                foodDb.child("Rating").setValue(newRating);
+                foodDb.child("TotalReviews").setValue(newTotalReviews);
                 popupWindow.dismiss();
                 clearDim(root);
-                return true;
 
             }
         });
+        // dismiss the popup window when touched
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -133,6 +162,8 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
     }
+
+
     void InitializeUI(){
         ratingbar = (RatingBar) findViewById(R.id.ratingBar);
         goBtn=findViewById(R.id.goBtn);
@@ -148,7 +179,6 @@ public class DashboardActivity extends AppCompatActivity {
         dashboard_txtRating=findViewById(R.id.dashboard_txtRating);
     }
     void reRandomizeFood(){
-        int foodIndex;
         do{
             foodIndex=mRandFoodIndex.nextInt(TabActivity.placesList.size());
         }while(!TabActivity.placesList.get(foodIndex).getCategories().contains(mTag));
@@ -174,8 +204,8 @@ public class DashboardActivity extends AppCompatActivity {
             dashboard_txtRating.setText("10");}
         dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
         double ratingPoint = curPlace.getRating()/2;
-        ratingbar.setRating((float)ratingPoint);
 
+        ratingbar.setRating((float)ratingPoint);
         phone.setText("PHONE: "+curPlace.getPhones().get(0));
         opcl.setText("OPEN/CLOSED: "+curPlace.getBegin()+" - "+curPlace.getEnd());
         pricerange.setText("PRICE RANGE: "+curPlace.getPrice_range().min_price+" - "+curPlace.getPrice_range().max_price+"(VND)");
@@ -188,6 +218,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
     void getSelectedFood(){
         Place curPlace=TabActivity.placesList.get(mIndex);
+        foodIndex=mIndex;
         Picasso.get().load(curPlace.getPhoto()).into(food);
         name.setText(curPlace.getName());
         address.setText(curPlace.getAddress());

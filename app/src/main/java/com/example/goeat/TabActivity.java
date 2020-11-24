@@ -161,9 +161,9 @@ public class TabActivity extends AppCompatActivity {
         super.onResume();
     }
     public void getNearby(){
+        mDistrict="";
         myGeocoding=new GeocodingAsync(TabActivity.this);
         myGeocoding.execute();
-        mDistrict="";
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

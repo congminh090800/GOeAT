@@ -15,4 +15,12 @@ public class PriceRange {
         public long getMin_price(){
             return min_price;
         }
+
+    public void setMax_price(int max_price) {
+        this.max_price = max_price;
+    }
+
+    public void setMin_price(int min_price) {
+        this.min_price = min_price;
+    }
 }

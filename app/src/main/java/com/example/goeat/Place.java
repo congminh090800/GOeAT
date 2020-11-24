@@ -76,6 +76,54 @@ public class Place{
     public long getId() {
         return id;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setBegin(String begin) {
+        this.begin = begin;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhones(List<String> phones) {
+        this.phones = phones;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public void setPrice_range(PriceRange price_range) {
+        this.price_range = price_range;
+    }
+
+    public void setRating(double rating) {
+        Rating = rating;
+    }
+
+    public void setTotalReviews(int totalReviews) {
+        TotalReviews = totalReviews;
+    }
 }
 
 
