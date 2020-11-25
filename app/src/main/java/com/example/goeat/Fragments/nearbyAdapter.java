@@ -56,6 +56,7 @@ class nearbyAdapter extends RecyclerView.Adapter<nearbyAdapter.NearbyViewHolder>
                 Intent homeIntent = new Intent(mContext, DashboardActivity.class);
                 homeIntent.putExtra("tag",tag);
                 homeIntent.putExtra("index",index);
+                homeIntent.putExtra("isHistory",false);
                 mContext.startActivity(homeIntent);
             }
         });

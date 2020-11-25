@@ -60,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         }
     }
-
     private void checkAuthState() {
         setLoading(true);
         mAuth.loadCurrentUser().addOnCompleteListener(new OnCompleteListener<User>() {

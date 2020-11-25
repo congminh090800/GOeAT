@@ -1,5 +1,7 @@
 package com.example.goeat;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.goeat.auth.Auth;
@@ -34,6 +36,13 @@ public class User {
 
     private User(String username, String email, String gender, long dateCreated) {
         this.uid = "";
+        this.username = username;
+        this.email = email;
+        this.gender = gender;
+        this.dateCreated = dateCreated;
+    }
+    private User(String username, String email, String gender, long dateCreated,String uid) {
+        this.uid = uid;
         this.username = username;
         this.email = email;
         this.gender = gender;
@@ -91,6 +100,6 @@ public class User {
                 '}';
     }
     public User copy(){
-        return new User(username, email, gender, dateCreated);
+        return new User(username, email, gender, dateCreated,uid);
     }
 }

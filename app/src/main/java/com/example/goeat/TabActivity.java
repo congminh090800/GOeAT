@@ -31,15 +31,18 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.goeat.auth.Auth;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
@@ -64,9 +67,12 @@ public class TabActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String mDistrict;
     public static ArrayList<Place> placesList;
+    public static ArrayList<Place> visitedList;
+    public static ArrayList<HistoryVal> historyList;
     ViewPagerAdapter viewPagerAdapter;
     private ProgressBar loading_spinner;
     private Handler handler;
+    private String UId;
 
     public FragmentRefreshListener getFragmentRefreshListener() {
         return fragmentRefreshListener;
@@ -81,8 +87,13 @@ public class TabActivity extends AppCompatActivity {
     }
 
     protected void onCreate(Bundle savedInstanceState) {
+        UId=Auth.getInstance().getCurrentUser().getUid();
         handler = new Handler();
         placesList=new ArrayList<Place>();
+        visitedList=new ArrayList<Place>();
+        historyList=new ArrayList<HistoryVal>();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        getVisited();
         getNearby();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
@@ -119,7 +130,7 @@ public class TabActivity extends AppCompatActivity {
                 tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        if (tab.getPosition()==1) homeFragment.scrollToTop();
+                        if (tab.getPosition()==1 || tab.getPosition()==2) homeFragment.scrollToTop();
                     }
 
                     @Override
@@ -134,7 +145,7 @@ public class TabActivity extends AppCompatActivity {
 
                 loading_spinner.setVisibility(View.GONE);
             }
-        }, 1500);
+        }, 2000);
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -174,10 +185,12 @@ public class TabActivity extends AppCompatActivity {
             return fragmentTitle.get(position);
         }
     }
+
     @Override
     protected void onResume(){
         super.onResume();
     }
+
     public void getNearby(){
         mDistrict="";
         myGeocoding=new GeocodingAsync(TabActivity.this);
@@ -193,8 +206,8 @@ public class TabActivity extends AppCompatActivity {
                     mDistrict=mDistrict.replace("Quận","District");
                 }
                 mDistrict=mDistrict.replace(" ","");
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils.removeAccent(mDistrict)).addValueEventListener(new ValueEventListener() {
+                mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils.removeAccent(mDistrict))
+                        .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         placesList.clear();
@@ -220,7 +233,48 @@ public class TabActivity extends AppCompatActivity {
                     getFragmentRefreshListener().onRefresh();
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
+
             }
         },timer);
+    }
+    public void getVisited(){
+        FirebaseDatabase.getInstance().getReference().child("history").child(UId).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("historytesting","on child added");
+                historyList.add(snapshot.getValue(HistoryVal.class));
+                historyList.get(historyList.size()-1).setPlaceID(snapshot.getKey());
+                Collections.sort(historyList);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                String placeID=snapshot.getKey();
+                Log.d("historytesting","on child changed");
+                for (int i=0;i<historyList.size();i++){
+                    if (historyList.get(i).getPlaceID().equals(placeID))
+                    {
+                        historyList.set(i,snapshot.getValue(HistoryVal.class));
+                        historyList.get(i).setPlaceID(snapshot.getKey());
+                    }
+                }
+                Collections.sort(historyList);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("history","failed");
+            }
+        });
     }
 }

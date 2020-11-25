@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.Rating;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,10 +32,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.goeat.auth.Auth;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+import org.osmdroid.util.GeoPoint;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -49,12 +63,18 @@ public class DashboardActivity extends AppCompatActivity {
     private Random mRandFoodIndex;
     private String mTag;
     private int mIndex;
+    private boolean mIsHistory;
     int foodIndex = 0;
     //database section
     private DatabaseReference mDatabase;
-
+    //private ArrayList<String> mDistricts;
+    String historyDistrict;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        mDistricts=new ArrayList<String>();
+//        mDistricts.addAll(Arrays.asList("District1","District2","District3","District4","District5","District6","District7","District8",
+//                "District9","District10","District11","District12","BinhChanh","BinhTan","BinhThanh","GoVap","NhaBe","PhuNhuan","TanBinh",
+//                "TanPhu","ThuDuc"));
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -65,26 +85,52 @@ public class DashboardActivity extends AppCompatActivity {
         mRandFoodIndex = new Random();
         mTag = getIntent().getStringExtra("tag");
         mIndex = getIntent().getIntExtra("index", -1);
+        mIsHistory=getIntent().getBooleanExtra("isHistory",false);
         InitializeUI();
-        if (mIndex == -1) {
-            reRandomizeFood();
-        } else {
+        if (mIsHistory==true) {
+            rerollBtn.setVisibility(View.INVISIBLE);
+        }
+        if (mIndex != -1) {
             getSelectedFood();
+        } else {
+            reRandomizeFood();
         }
         //BUTTONS HANDLING
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String district;
-                do {
-                    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
-                    district = sharedPref.getString("curAddress", "");
-                } while ("".equals(district));
-                if (district.contains("Quận ")) {
-                    district = district.replace("Quận", "District");
+                String district=null;
+                if (mIsHistory==false){
+                    do {
+                        SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+                        district = sharedPref.getString("curAddress", "");
+                    } while ("".equals(district));
+                    if (district.contains("Quận ")) {
+                        district = district.replace("Quận", "District");
+                    }
+                    district = district.replace(" ", "");
+                    district=VNCharacterUtils.removeAccent(district);
+                    Auth.getInstance().updateHistory(TabActivity.placesList.get(foodIndex).id, district);
+                } else
+                {
+                    DatabaseReference db=FirebaseDatabase.getInstance().getReference().child("Places").child("HoChiMinh");
+                    db.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot data:snapshot.getChildren()){
+                                if (data.getValue().toString().contains("id="+TabActivity.visitedList.get(mIndex).getId())){
+                                    Auth.getInstance().updateHistory(TabActivity.visitedList.get(mIndex).getId(),data.getKey());
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
-                district = district.replace(" ", "");
-                Auth.getInstance().updateHistory(TabActivity.placesList.get(foodIndex).id, district);
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -144,24 +190,58 @@ public class DashboardActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //init important values
+                final Place curPlace;
+                if(mIsHistory==false) curPlace=TabActivity.placesList.get(foodIndex);
+                else curPlace=TabActivity.visitedList.get(mIndex);
+                String mDistrict=null;
+
+                //update rating UI
                 float PopUpRating = popUpRatingBar.getRating();
-                Place curPlace = TabActivity.placesList.get(foodIndex);
-                int newTotalReviews = curPlace.getTotalReviews() + 1;
-                double newRating = (curPlace.getRating() * curPlace.getTotalReviews() + PopUpRating * 2) / newTotalReviews;
+                final int newTotalReviews = curPlace.getTotalReviews() + 1;
+                final double newRating = (curPlace.getRating() * curPlace.getTotalReviews() + PopUpRating * 2) / newTotalReviews;
                 curPlace.setTotalReviews(newTotalReviews);
                 curPlace.setRating(newRating);
                 dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
                 ratingbar.setRating((float) curPlace.getRating() / 2);
-                SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
-                String mDistrict = sharedPref.getString("curAddress", "");
-                if (mDistrict.contains("Quận ")) {
-                    mDistrict = mDistrict.replace("Quận", "District");
+                if(mIsHistory==false) {
+                    //get the current district
+                    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+                    mDistrict = sharedPref.getString("curAddress", "");
+                    if (mDistrict.contains("Quận ")) {
+                        mDistrict = mDistrict.replace("Quận", "District");
+                    }
+                    mDistrict = mDistrict.replace(" ", "");
+                    mDistrict = VNCharacterUtils.removeAccent(mDistrict);
+
+                    //update database
+                    DatabaseReference foodDb = mDatabase.child("Places").child("HoChiMinh").child(mDistrict)
+                            .child(String.valueOf(curPlace.getId()));
+                    foodDb.child("Rating").setValue(newRating);
+                    foodDb.child("TotalReviews").setValue(newTotalReviews);
+                }else{
+                    DatabaseReference db=FirebaseDatabase.getInstance().getReference().child("Places").child("HoChiMinh");
+                    db.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot data:snapshot.getChildren()){
+                                if (data.getValue().toString().contains("id="+TabActivity.visitedList.get(mIndex).getId())){
+                                    DatabaseReference foodDb = mDatabase.child("Places").child("HoChiMinh").child(data.getKey())
+                                            .child(String.valueOf(curPlace.getId()));
+                                    foodDb.child("Rating").setValue(newRating);
+                                    foodDb.child("TotalReviews").setValue(newTotalReviews);
+                                    break;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
-                mDistrict = mDistrict.replace(" ", "");
-                DatabaseReference foodDb = mDatabase.child("Places").child("HoChiMinh").child(VNCharacterUtils
-                        .removeAccent(mDistrict)).child(String.valueOf(curPlace.getId()));
-                foodDb.child("Rating").setValue(newRating);
-                foodDb.child("TotalReviews").setValue(newTotalReviews);
+
+                //dismiss the rating
                 popupWindow.dismiss();
                 clearDim(root);
 
@@ -233,7 +313,13 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     void getSelectedFood() {
-        Place curPlace = TabActivity.placesList.get(mIndex);
+        Place curPlace;
+        if (mIsHistory==false){
+            curPlace = TabActivity.placesList.get(mIndex);
+        }else {
+            curPlace=TabActivity.visitedList.get(mIndex);
+        }
+
         foodIndex = mIndex;
         Picasso.get().load(curPlace.getPhoto()).into(food);
         name.setText(curPlace.getName());

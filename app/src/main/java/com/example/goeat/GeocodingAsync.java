@@ -61,7 +61,6 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         if (address==null) {
             return null;
         }

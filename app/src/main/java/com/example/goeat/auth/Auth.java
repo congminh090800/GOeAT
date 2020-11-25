@@ -261,12 +261,7 @@ public class Auth {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<Long> ts = new ArrayList<>();
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            ts.add(child.getValue(Long.class));
-                        }
-                        PlaceID pi = new PlaceID(district, ts);
-                        pi.timestamp.add(new Date().getTime());
+                        PlaceID pi = new PlaceID(district, new Date().getTime());
                         post(pi, placeID);
                     }
 
@@ -284,9 +279,9 @@ public class Auth {
     @IgnoreExtraProperties
     public static class PlaceID{
         public String district;
-        public List<Long> timestamp;
+        public long timestamp;
 
-        public PlaceID(String district, List<Long> timestamp) {
+        public PlaceID(String district, long timestamp) {
             this.district = district;
             this.timestamp = timestamp;
         }

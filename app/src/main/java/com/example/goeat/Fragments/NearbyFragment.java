@@ -47,6 +47,7 @@ public class NearbyFragment extends Fragment {
         ((TabActivity)getActivity()).setFragmentRefreshListener(new TabActivity.FragmentRefreshListener() {
             @Override
             public void onRefresh() {
+                Collections.shuffle(TabActivity.placesList);
                 updateOperation();
             }
         });
@@ -67,7 +68,6 @@ public class NearbyFragment extends Fragment {
         updateOperation();
     }
     public void updateOperation(){
-        Collections.shuffle(TabActivity.placesList);
         nearbyAdapter nAdapter=new nearbyAdapter(getActivity());
         recyclerView.setAdapter(nAdapter);
         nAdapter.notifyDataSetChanged();

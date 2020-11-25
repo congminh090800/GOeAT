@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment {
                 Intent homeIntent = new Intent(getActivity(), DashboardActivity.class);
                 homeIntent.putExtra("tag",items[position]);
                 homeIntent.putExtra("index",-1);
+                homeIntent.putExtra("isHistory",false);
                 startActivity(homeIntent);
                 }else{
                     Toast.makeText(getContext(), "GẦN ĐÂY KHÔNG CÓ LOẠI QUÁN NÀY", Toast.LENGTH_LONG).show();
