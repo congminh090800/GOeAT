@@ -8,13 +8,13 @@ public class Validator {
     private static final String USERNAME_REGEX = "^[a-zA-Z0-9]+$";
     private static final String PASSWORD_REGEX = "^(?=.*?[A-Z])(?=(.*[a-z])+)(?=(.*[\\d])+)(?=(.*[\\W])+)(?!.*\\s).{8,}$";
 
-    public static final String PASSWORD_RULE = "* At least one upper case English letter\n" +
-            "* At least one lower case English letter\n" +
-            "* At least one digit\n" +
-            "* At least one special character\n" +
-            "* Minimum eight in length";
+    public static final String PASSWORD_RULE = "* Phải có ít nhất một kí tự in hoa\n" +
+            "* Phải có ít nhất một kí tự thường\n" +
+            "* Phải có ít nhất một kí tự số\n" +
+            "* Phải có ít nhất một kí tự đặc biệt\n" +
+            "* Phải có ít nhất 8 kí tự";
 
-    public static final String USERNAME_RULE = "* At least one letter or number\n" +
+    public static final String USERNAME_RULE = "* Phải có ít nhất một kí tự số hoặc chữ\n" +
             "* Every character from the start to the end is a letter or number\n";
 
     static Pattern emailPattern = Pattern.compile(EMAIL_REGEX);

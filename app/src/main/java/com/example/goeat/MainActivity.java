@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Drawable myLocationDrawable= ResourcesCompat.getDrawable(getResources(),R.mipmap.current_location_icon,null);
         assert myLocationDrawable != null;
         Bitmap myLocationBitmap=((BitmapDrawable)myLocationDrawable).getBitmap();
-        myLocationBitmap=ScaleBitmap.scaleDown(myLocationBitmap,130,true);
+        myLocationBitmap=ScaleBitmap.scaleDown(myLocationBitmap,80,true);
         myLocationOverlay.setDirectionArrow(myLocationBitmap);
         map.getOverlays().add(myLocationOverlay);
         Location location = null;
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         //Draw markers
         Marker startMarker = new Marker(map);
         startMarker.setPosition(mStartPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
         startMarker.setIcon(getResources().getDrawable(R.mipmap.marker_current_location,null));
         map.getOverlays().add(startMarker);
 

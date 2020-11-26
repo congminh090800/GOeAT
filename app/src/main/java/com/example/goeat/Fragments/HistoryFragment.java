@@ -64,9 +64,6 @@ public class HistoryFragment extends Fragment {
         updateOperation();
     }
     public void updateOperation(){
-        for (HistoryVal val:historyList){
-            Log.d("historytesting",val.getString());
-        }
         queryToFoodInfo();
         new Handler().postDelayed(new Runnable() {
             @Override

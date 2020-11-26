@@ -3,6 +3,11 @@
   <component name="WizardSettings">
     <option name="children">
       <map>
+        <entry key="imageWizard">
+          <value>
+            <PersistentState />
+          </value>
+        </entry>
         <entry key="vectorWizard">
           <value>
             <PersistentState>
@@ -18,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/star/baseline_star_24.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialiconstwotone/nature/twotone_nature_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="24b2b4" />
-                            <entry key="outputName" value="ic_baseline_star_24" />
+                            <entry key="color" value="ea4335" />
+                            <entry key="outputName" value="ic_twotone_nature_24" />
                             <entry key="sourceFile" value="C:\Users\Admin\Desktop\something that im working on\GOeAT--Android-main\app" />
                           </map>
                         </option>

@@ -59,7 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
         String gender = (selectedId == R.id.female) ? "Female" : "Male";
 
         if (!Validator.isValidEmail(email)) {
-            emailTV.setError("Invalid Email");
+            emailTV.setError("Email không hợp lệ");
             return;
         }
         if (!Validator.isValidPassword(password)) {
@@ -79,11 +79,11 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<User> task) {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Đăng kí thành công", Toast.LENGTH_LONG).show();
                             mAuth.signOut();
                             SignUpActivity.this.finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Registration failed! Please try again later", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Đăng kí thất bại", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

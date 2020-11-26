@@ -80,11 +80,11 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordTV.getText().toString();
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Bạn đang bỏ trống email này", Toast.LENGTH_LONG).show();
             return;
         }
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Bạn đang bỏ trống mật khẩu này", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                         LoginActivity.this.setLoading(false);
                         if (task.isSuccessful()) {
                             Log.d("Login", "onComplete: " + task.getResult());
-                            Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Chào mừng "+mAuth.getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
                             Intent intent = new Intent(LoginActivity.this, TabActivity.class);
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
     private void sendPasswordResetEmail() {
         String email = emailTV.getText().toString();
         if (!Validator.isValidEmail(email)) {
-            Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Vui lòng nhập email...", Toast.LENGTH_LONG).show();
             return;
         }
         setLoading(true);
@@ -122,9 +122,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 setLoading(false);
                 if (task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Chúng tôi đã gửi đến email của bạn một hướng dẫn, vui lòng thực hiện đễ thay đổi", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
         });

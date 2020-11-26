@@ -134,32 +134,32 @@
             android:id="@+id/sex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginEnd="118dp"
-            android:layout_marginTop="-2dp"
-            android:orientation="horizontal"
-            tools:ignore="RelativeOverlap"
+            android:layout_marginLeft="39dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="91dp"
             android:checkedButton="@id/male"
-            >
+            android:orientation="horizontal"
+            tools:ignore="RelativeOverlap">
 
             <RadioButton
                 android:id="@+id/male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
                 android:buttonTint="#FFFFFF"
-                android:text="@string/nam" />
+                android:text="@string/nam"
+                android:textColor="#FFFFFF" />
 
             <RadioButton
                 android:id="@+id/female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:textColor="#FFFFFF"
                 android:buttonTint="#FFFFFF"
-                android:text="Nữ" />
+                android:text="Nữ"
+                android:textColor="#FFFFFF" />
 
 
         </RadioGroup>
@@ -167,10 +167,11 @@
         <TextView
             android:id="@+id/gioitinhText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:text="Giới tính "
-            android:textColor="#FFFFFF"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
             android:textSize="20sp" />
     </RelativeLayout>
     <ProgressBar

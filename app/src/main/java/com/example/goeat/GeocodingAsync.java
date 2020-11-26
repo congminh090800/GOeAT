@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,12 +57,14 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         SharedPreferences sharedPref = contextParent.getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         final GeoPoint currentPoint = new GeoPoint(location);
+        Log.d("test",currentPoint.toString());
         try {
             address=getAddress(currentPoint);
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (address==null) {
+            Log.d("test","null");
             return null;
         }
         else {
@@ -94,8 +97,12 @@ public class GeocodingAsync extends AsyncTask<Void, Void, Address> implements Lo
         //String theAddress;
         double dLatitude = p.getLatitude();
         double dLongitude = p.getLongitude();
-        List<Address> addresses = geocoder.getFromLocation(dLatitude, dLongitude, 1);
+        List<Address> addresses=new ArrayList<Address>();
+        while(addresses.size()<=0){
+            addresses= geocoder.getFromLocation(dLatitude, dLongitude, 1);
+        }
         Address address = addresses.size() > 0 ? addresses.get(0) : null;
+        Log.d("test",address.toString());
         return address != null ? address : null;
     }
     public String getAddressStr(Address address){

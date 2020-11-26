@@ -52,7 +52,8 @@ public class ProfileFragment extends Fragment {
         email = v.findViewById(R.id.email);
         email.append(u.getEmail());
         gender = v.findViewById(R.id.gender);
-        gender.append(u.getGender());
+        String gen=(u.getGender().equals("Male"))?"Nam":"Nữ";
+        gender.append(gen);
         date = v.findViewById(R.id.date);
         date.append(new Date(TimeUnit.DAYS.toDays(u.getDateCreated()))+"");
 
@@ -80,9 +81,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Chúng tôi đã gửi đến email của bạn một hướng dẫn, vui lòng thực hiện đễ thay đổi", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
         });
