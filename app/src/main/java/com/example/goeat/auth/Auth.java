@@ -6,9 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.goeat.Place;
 import com.example.goeat.User;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,13 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class Auth {
@@ -57,7 +49,7 @@ public class Auth {
     public static class UserUIDSetter {
         private UserUIDSetter(){}
     }
-    private static UserUIDSetter setter = new UserUIDSetter();
+    private static UserUIDSetter userUIDSetter = new UserUIDSetter();
 
     public static Auth getInstance() {
         return Loader.INSTANCE;
@@ -122,8 +114,15 @@ public class Auth {
                     public void onSuccess(AuthResult authResult) {
                         FirebaseUser firebaseUser = authResult.getUser();
                         if (firebaseUser != null) {
-                            databaseReference.child("users").child(firebaseUser.getUid()).setValue(user);
-                            addSuccessListener(taskCompletionSource, loadCurrentUser());
+                            user.setUid(firebaseUser.getUid(), userUIDSetter);
+                            databaseReference.child("users").child(firebaseUser.getUid()).setValue(user)
+                                .addOnFailureListener(taskcsFailureListener(taskCompletionSource))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        taskCompletionSource.setResult(user);
+                                    }
+                                });
                         } else {
                             taskCompletionSource.setException(new NullPointerException());
                         }
@@ -200,7 +199,7 @@ public class Auth {
                             try {
                                 currentUser = snapshot.getValue(User.class);
                                 if (currentUser != null) {
-                                    currentUser.setUid(firebaseUser.getUid(), setter);
+                                    currentUser.setUid(firebaseUser.getUid(), userUIDSetter);
                                 }
                                 taskCompletionSource.setResult(currentUser);
                             } catch (Exception e) {
