@@ -87,8 +87,30 @@ public class TabActivity extends AppCompatActivity {
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-        UId=Auth.getInstance().getCurrentUser().getUid();
-        Log.d("test",UId);
+        if (Auth.getInstance().getCurrentUser().getUid()!=null)
+        {
+            UId=Auth.getInstance().getCurrentUser().getUid();
+            Log.d("test",UId);
+        }
+        else{
+            FirebaseDatabase.getInstance().getReference()
+                    .child("users").orderByChild("email").equalTo(Auth.getInstance().getCurrentUser().getEmail())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for(DataSnapshot ds : snapshot.getChildren()) {
+                                String key = ds.getKey();
+                                Log.d("test",UId);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.d("test","get UId failed");
+                        }
+                    });
+        }
+
         handler = new Handler();
         placesList=new ArrayList<Place>();
         visitedList=new ArrayList<Place>();

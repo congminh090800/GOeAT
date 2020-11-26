@@ -73,6 +73,9 @@ public class Place{
         double ratingP=(double) Math.round(value * scale) / scale;
         return ratingP;
     }
+    public double getTrueRating(){
+        return Rating;
+    }
     public long getId() {
         return id;
     }

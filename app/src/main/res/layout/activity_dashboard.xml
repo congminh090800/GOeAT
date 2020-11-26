@@ -14,6 +14,21 @@
         >
 
         <ImageButton
+            android:id="@+id/dialBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_bt"
+            android:elevation="15dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_dial_btn"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toStartOf="@+id/rerollBtn"
+            app:layout_constraintHorizontal_bias="0.892"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/food"
+            app:layout_constraintVertical_bias="0.509" />
+
+        <ImageButton
             android:id="@+id/commentBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:paddingBottom="5dp"
-                android:paddingTop="20dp"
+                android:paddingTop="25dp"
                 android:text="Name"
                 android:textAllCaps="true"
                 android:textSize="30dp"

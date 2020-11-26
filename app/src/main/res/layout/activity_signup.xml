@@ -119,7 +119,7 @@
         app:layout_constraintTop_toBottomOf="@+id/password"
         android:importantForAutofill="no" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/relativeLayout"
         android:layout_width="330dp"
         android:layout_height="31dp"
@@ -133,21 +133,23 @@
         <RadioGroup
             android:id="@+id/sex"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="39dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="91dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/gioitinhText"
             android:checkedButton="@id/male"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             tools:ignore="RelativeOverlap">
 
             <RadioButton
                 android:id="@+id/male"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:buttonTint="#FFFFFF"
                 android:text="@string/nam"
                 android:textColor="#FFFFFF" />
@@ -155,7 +157,7 @@
             <RadioButton
                 android:id="@+id/female"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="30dp"
                 android:buttonTint="#FFFFFF"
                 android:text="Nữ"
@@ -172,8 +174,11 @@
             android:text="Giới tính "
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
-    </RelativeLayout>
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <ProgressBar
         android:id="@+id/progressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"

@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,7 +38,7 @@ import java.util.Random;
 
 
 public class DashboardActivity extends AppCompatActivity {
-    private ImageButton goBtn, rerollBtn, commentBtn;
+    private ImageButton goBtn, rerollBtn, commentBtn,dialBtn;
     private ImageView food;
     private TextView name, address, tags, phone, opcl, pricerange, dashboard_txtRating;
     private RatingBar ratingbar, popUpRatingBar;
@@ -124,6 +126,20 @@ public class DashboardActivity extends AppCompatActivity {
                 onButtonShowPopupWindow(v);
             }
         });
+        dialBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String command="tel:";
+                if (mIsHistory==false){
+                    command+=TabActivity.placesList.get(foodIndex).getPhones().get(0);
+                }else{
+                    command+=TabActivity.visitedList.get(mIndex).getPhones().get(0);
+                }
+                Uri number = Uri.parse(command);
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+                startActivity(callIntent);
+            }
+        });
     }
 
     // Darken the background when Window Popup
@@ -171,11 +187,10 @@ public class DashboardActivity extends AppCompatActivity {
                 if(mIsHistory==false) curPlace=TabActivity.placesList.get(foodIndex);
                 else curPlace=TabActivity.visitedList.get(mIndex);
                 String mDistrict=null;
-
                 //update rating UI
                 float PopUpRating = popUpRatingBar.getRating();
                 final int newTotalReviews = curPlace.getTotalReviews() + 1;
-                final double newRating = (curPlace.getRating() * curPlace.getTotalReviews() + PopUpRating * 2) / newTotalReviews;
+                final double newRating = (curPlace.getTrueRating() * curPlace.getTotalReviews() + (double)PopUpRating * 2) / newTotalReviews;
                 curPlace.setTotalReviews(newTotalReviews);
                 curPlace.setRating(newRating);
                 dashboard_txtRating.setText(String.valueOf(curPlace.getRating()));
@@ -247,6 +262,7 @@ public class DashboardActivity extends AppCompatActivity {
         opcl = findViewById(R.id.opcl);
         pricerange = findViewById(R.id.pricerange);
         dashboard_txtRating = findViewById(R.id.dashboard_txtRating);
+        dialBtn=findViewById(R.id.dialBtn);
     }
 
     void reRandomizeFood() {
