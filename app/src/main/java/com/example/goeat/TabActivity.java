@@ -88,6 +88,7 @@ public class TabActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         UId=Auth.getInstance().getCurrentUser().getUid();
+        Log.d("test",UId);
         handler = new Handler();
         placesList=new ArrayList<Place>();
         visitedList=new ArrayList<Place>();
@@ -198,10 +199,8 @@ public class TabActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                do{
-                    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
-                    mDistrict=sharedPref.getString("curAddress","");
-                }while (mDistrict=="");
+                SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
+                mDistrict=sharedPref.getString("curAddress","ThuDuc");
                 if (mDistrict.contains("Quận ")){
                     mDistrict=mDistrict.replace("Quận","District");
                 }
