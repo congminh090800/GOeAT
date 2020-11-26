@@ -79,8 +79,12 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<User> task) {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Đăng kí thành công", Toast.LENGTH_LONG).show();
-                            mAuth.signOut();
+                            Log.d("Login", "onComplete: " + task.getResult());
+                            Toast.makeText(getApplicationContext(), "Chào mừng " + mAuth.getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
+
+                            Intent intent = new Intent(SignUpActivity.this, TabActivity.class);
+                            startActivity(intent);
                             SignUpActivity.this.finish();
                         } else {
                             Toast.makeText(getApplicationContext(), "Đăng kí thất bại", Toast.LENGTH_LONG).show();

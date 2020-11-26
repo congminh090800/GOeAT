@@ -112,11 +112,19 @@ public class Auth {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        FirebaseUser firebaseUser = authResult.getUser();
+                        final FirebaseUser firebaseUser = authResult.getUser();
                         if (firebaseUser != null) {
+                            currentUser = user;
+                            currentUser.setUid(firebaseUser.getUid(), userUIDSetter);
                             user.setUid(firebaseUser.getUid(), userUIDSetter);
                             databaseReference.child("users").child(firebaseUser.getUid()).setValue(user)
-                                .addOnFailureListener(taskcsFailureListener(taskCompletionSource))
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        deleteCurrentUser();
+                                        taskCompletionSource.setException(e);
+                                    }
+                                })
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -131,6 +139,15 @@ public class Auth {
 
         return taskCompletionSource.getTask();
     }
+
+    private void deleteCurrentUser(){
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            firebaseUser.delete();
+        }
+        signOut();
+    }
+
 
     public Task<Void> updateCurrentUser(final User user) {
         final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
