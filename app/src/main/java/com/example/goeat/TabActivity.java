@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.goeat.Fragments.HomeFragment;
 import com.example.goeat.Fragments.HistoryFragment;
@@ -110,6 +111,7 @@ public class TabActivity extends AppCompatActivity {
                         }
                     });
         }
+        Toast.makeText(getApplicationContext(), "Chào mừng "+Auth.getInstance().getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
 
         handler = new Handler();
         placesList=new ArrayList<Place>();

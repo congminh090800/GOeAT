@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                         LoginActivity.this.setLoading(false);
                         if (task.isSuccessful()) {
                             Log.d("Login", "onComplete: " + task.getResult());
-                            Toast.makeText(getApplicationContext(), "Chào mừng "+mAuth.getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(), "Chào mừng "+mAuth.getCurrentUser().getUsername(), Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
                             Intent intent = new Intent(LoginActivity.this, TabActivity.class);
