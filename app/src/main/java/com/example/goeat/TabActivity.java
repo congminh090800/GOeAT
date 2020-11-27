@@ -1,7 +1,9 @@
 package com.example.goeat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -299,5 +301,19 @@ public class TabActivity extends AppCompatActivity {
                 Log.d("history","failed");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage("Bạn có muốn thoát ứng dụng?")
+                .setCancelable(false)
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finishAndRemoveTask();
+                    }
+                })
+                .setNegativeButton("Không", null)
+                .show();
     }
 }

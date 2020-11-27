@@ -22,11 +22,11 @@
             android:padding="10dp"
             android:src="@drawable/ic_dial_btn"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-            app:layout_constraintEnd_toStartOf="@+id/rerollBtn"
-            app:layout_constraintHorizontal_bias="0.892"
+            app:layout_constraintEnd_toStartOf="@+id/goBtn"
+            app:layout_constraintHorizontal_bias="0.941"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/food"
-            app:layout_constraintVertical_bias="0.509" />
+            app:layout_constraintVertical_bias="0.52" />
 
         <ImageButton
             android:id="@+id/commentBtn"
@@ -43,37 +43,38 @@
             app:layout_constraintHorizontal_bias="0.951"
             app:layout_constraintStart_toStartOf="parent" />
 
+
         <ImageButton
             android:id="@+id/goBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginStart="10dp"
             android:background="@drawable/round_bt"
             android:elevation="15dp"
             android:padding="10dp"
             android:src="@drawable/ic_baseline_restaurant_menu_24"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.04"
-            app:layout_constraintStart_toEndOf="@+id/rerollBtn"
-            app:layout_constraintTop_toBottomOf="@+id/food" />
+            app:layout_constraintHorizontal_bias="0.953"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/food"
+            app:layout_constraintVertical_bias="0.53" />
 
         <ImageButton
             android:id="@+id/rerollBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginStart="150dp"
-            android:layout_marginEnd="5dp"
             android:background="@drawable/round_bt"
             android:elevation="15dp"
             android:padding="10dp"
             android:src="@drawable/ic_baseline_autorenew_24"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toStartOf="@+id/dialBtn"
+            app:layout_constraintHorizontal_bias="0.93"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/goBtn" />
-
+            app:layout_constraintTop_toBottomOf="@+id/food"
+            app:layout_constraintVertical_bias="0.52" />
 
         <ImageView
             android:id="@+id/food"
