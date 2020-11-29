@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +56,8 @@ public class ProfileFragment extends Fragment {
         String gen=(u.getGender().equals("Male"))?"Nam":"Nữ";
         gender.append(gen);
         date = v.findViewById(R.id.date);
-        date.append(new Date(TimeUnit.DAYS.toDays(u.getDateCreated()))+"");
+        String dateString = new SimpleDateFormat("dd/MM/yyyy").format(new Date(u.getDateCreated()));
+        date.append(dateString);
 
         changepassword = v.findViewById(R.id.changepassword);
         changepassword.setOnClickListener(new View.OnClickListener() {
