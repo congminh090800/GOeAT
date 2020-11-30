@@ -18,6 +18,8 @@ FUNCTIONALITIES:
 
 *Pick a nearby random food with tag-filtered
 
+*Rating
+
 *Location and routing
 
 *Swipe down to refresh data and relocate current position
