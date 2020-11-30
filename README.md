@@ -14,9 +14,9 @@ FUNCTIONALITIES:
 
 *Food tags filter
 
-*Provide nearby food stall information
+*Provide nearby food stalls'information
 
-*Pick a nearby random food
+*Pick a nearby random food with tag-filtered
 
 *Location and routing
 
