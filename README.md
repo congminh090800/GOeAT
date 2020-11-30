@@ -9,10 +9,18 @@
 <a href="https://imgur.com/d5nv5OL"><img src="https://i.imgur.com/d5nv5OL.png" title="source: imgur.com" width="200px"/></a>
 
 FUNCTIONALITIES:
+
 *Authentication
+
 *Food tags filter
+
 *Provide nearby food stall information
+
 *Pick a nearby random food
+
 *Location and routing
+
 *Swipe down to refresh data and relocate current position
+
 *Save history
+
