@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.goeat.Fragments.HistoryFragment;
 import com.example.goeat.auth.Auth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +54,7 @@ public class DashboardActivity extends AppCompatActivity {
     private boolean mIsHistory;
     int foodIndex = 0;
     private DatabaseReference mDatabase;
+    private DatabaseReference db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,18 +94,20 @@ public class DashboardActivity extends AppCompatActivity {
                     Auth.getInstance().updateHistory(TabActivity.placesList.get(foodIndex).getId(), district);
                 } else
                 {
-                    DatabaseReference db=FirebaseDatabase.getInstance().getReference().child("Places").child("HoChiMinh");
+                    db=FirebaseDatabase.getInstance().getReference().child("Places").child("HoChiMinh");
                     db.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Log.d("mIndexTest",mIndex+"");
+                            Log.d("mIndexTest",TabActivity.visitedList.size()+"");
                             for (DataSnapshot data:snapshot.getChildren()){
                                 if (data.getValue().toString().contains("id="+TabActivity.visitedList.get(mIndex).getId())){
                                     Auth.getInstance().updateHistory(TabActivity.visitedList.get(mIndex).getId(),data.getKey());
                                     break;
                                 }
                             }
+                            db.removeEventListener(this);
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -363,4 +368,14 @@ public class DashboardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    public interface OnHistoryChangeListener{
+//        void onHistoryChange();
+//    }
+//    public OnHistoryChangeListener onHistoryChangeListener;
+//    public void setOnHistoryChangeListener(OnHistoryChangeListener listener){this.onHistoryChangeListener=listener;}
+//    public OnHistoryChangeListener getOnHistoryChangeListener(){
+//        return onHistoryChangeListener;
+//    }
+
 }
