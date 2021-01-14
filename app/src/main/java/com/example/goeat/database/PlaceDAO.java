@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class PlaceDAO {
@@ -48,4 +50,25 @@ public class PlaceDAO {
         return save(district, place);
     }
 
+    public Task<List<Place>> getPlacesByDistrict(String district) {
+        final TaskCompletionSource<List<Place>> task = new TaskCompletionSource<>();
+        placesRef.child(district)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Place> result = new ArrayList<>();
+                        for (DataSnapshot data: snapshot.getChildren()) {
+                            result.add(data.getValue(Place.class));
+                        }
+                        task.setResult(result);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        task.setException(error.toException());
+                    }
+                });
+
+        return task.getTask();
+    }
 }
