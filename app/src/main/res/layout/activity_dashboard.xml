@@ -43,6 +43,20 @@
             app:layout_constraintHorizontal_bias="0.951"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <ImageButton
+            android:id="@+id/commentBtn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/round_bt"
+            android:backgroundTint="#24b2b4"
+            android:elevation="15dp"
+            android:padding="15dp"
+            android:src="@drawable/comment_btn"
+            app:layout_constraintBottom_toTopOf="@+id/commentBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.951"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
             android:id="@+id/goBtn"
