@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.example.goeat.Place;
 import com.example.goeat.auth.Auth;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -35,15 +36,15 @@ public class PlaceDAO {
     private final DatabaseReference placesRef;
 
     private PlaceDAO(){
-        placesRef = FirebaseDatabase.getInstance().getReference().child("Places");
+        placesRef = FirebaseDatabase.getInstance().getReference().child("Places").child("HoChiMinh");
     }
 
     public Task<Void> delete(String district, long id){
-        return placesRef.child("HoChiMinh").child(district).child(String.valueOf(id)).removeValue();
+        return placesRef.child(district).child(String.valueOf(id)).removeValue();
     }
 
     public Task<Void> save(String district, Place place){
-        return placesRef.child("HoChiMinh").child(district).child(String.valueOf(place.getId())).setValue(place.toMap());
+        return placesRef.child(district).child(String.valueOf(place.getId())).setValue(place.toMap());
     }
 
     public Task<Void> update(String district, Place place){
@@ -70,5 +71,36 @@ public class PlaceDAO {
                 });
 
         return task.getTask();
+    }
+
+    public void test(){
+        Task<List<Place>> taskDistrictDetail = PlaceDAO.getInstance().getPlacesByDistrict("BinhChanh");
+
+
+        taskDistrictDetail
+                .addOnSuccessListener(new OnSuccessListener<List<Place>>() {
+                    @Override
+                    public void onSuccess(List<Place> places) {
+                        Place first = places.get(0);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //log err
+                    }
+                });
+
+        taskDistrictDetail.addOnCompleteListener(new OnCompleteListener<List<Place>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<Place>> task) {
+                if (task.isSuccessful()) {
+                    List<Place> placeList = task.getResult();
+                } else  {
+                    //err
+                }
+            }
+        });
     }
 }
