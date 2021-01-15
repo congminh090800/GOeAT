@@ -1,4 +1,4 @@
-package com.example.goeat;
+    package com.example.goeat;
 
 
 import androidx.appcompat.app.AppCompatActivity;

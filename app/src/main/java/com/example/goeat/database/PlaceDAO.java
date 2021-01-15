@@ -35,7 +35,7 @@ public class PlaceDAO {
 
     private final DatabaseReference placesRef;
 
-    private PlaceDAO(){
+    public PlaceDAO(){
         placesRef = FirebaseDatabase.getInstance().getReference().child("Places").child("HoChiMinh");
     }
 
