@@ -17,11 +17,7 @@
         <activity android:name=".EditActivity"></activity>
         <activity android:name=".FoodlistActivity" />
         <activity android:name=".DistrictActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".SignUpActivity" />
         <activity
@@ -35,7 +31,11 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/SplashScreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".TabActivity"

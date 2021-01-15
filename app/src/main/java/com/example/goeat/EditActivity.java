@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -68,34 +70,50 @@ public class EditActivity extends AppCompatActivity {
         phone.setText(instance.getPhones().get(0));
         opcl.setText("OPEN/CLOSED: " + instance.getBegin() + " - " + instance.getEnd());
         pricerange.setText("PRICE RANGE: " + instance.getPrice_range().min_price + "-" + instance.getPrice_range().max_price + "(VND)");
-        List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.toString().split(",")));
-        List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.toString().split(",")));
-
-        String holdRange = pricerange.getText().toString();
-        holdRange = holdRange.replaceAll("[^a-zA-Z0-9]", " ");
-        int i = holdRange.length();
-        holdRange = holdRange.substring(13,i);
-        i = holdRange.length();
-        holdRange =holdRange.substring(0,i-5);
 
 
 
-        instance.setName(name.getText().toString());
-        instance.setAddress(address.getText().toString());
-        instance.setPhones(tempPhone);
-        instance.setCategories(tempCateory);
-        List<String> tempRangeOneTwo = new ArrayList<String>(Arrays.asList(holdRange.split(" ")));
-        PriceRange tempRange = new PriceRange();
-        tempRange.setMin_price(Integer.parseInt(tempRangeOneTwo.get(0)));
-        tempRange.setMax_price(Integer.parseInt(tempRangeOneTwo.get(1)));
-        instance.setPrice_range(tempRange);
+
+
+
+
+
+
+
+
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    placeDA0.update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    String holdRange = pricerange.getText().toString();
+                    holdRange = holdRange.replaceAll("[^a-zA-Z0-9]", " ");
+                    int i = holdRange.length();
+                    holdRange = holdRange.substring(13,i);
+                    i = holdRange.length();
+                    holdRange =holdRange.substring(0,i-5);
+
+                    List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.toString().split(",")));
+                    List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.toString().split(",")));
+
+                    Log.d("Nameeee",instance.getName());
+                    placeDA0.getInstance();
+                    instance.setName(name.getText().toString());
+                    Log.d("INSTANCEEEE",instance.getName());
+                    instance.setAddress(address.getText().toString());
+                    instance.setPhones(tempPhone);
+                    instance.setCategories(tempCateory);
+                    List<String> tempRangeOneTwo = new ArrayList<String>(Arrays.asList(holdRange.split(" ")));
+                    PriceRange tempRange = new PriceRange();
+                    tempRange.setMin_price(Integer.parseInt(tempRangeOneTwo.get(0)));
+                    tempRange.setMax_price(Integer.parseInt(tempRangeOneTwo.get(1)));
+                    instance.setPrice_range(tempRange);
+                    Log.d("Addressss",instance.getAddress());
+
+                    placeDA0.getInstance().update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+                                Log.d("Updateee",instance.getName());
+
                                 Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
                             }
                         }
@@ -103,7 +121,14 @@ public class EditActivity extends AppCompatActivity {
 
                 }
             });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EditActivity.this,FoodlistActivity.class);
+                startActivity(intent);
 
+            }
+        });
     }
     void InitializeUI() {
         save = findViewById(R.id.save_Edit);
