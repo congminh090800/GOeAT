@@ -99,6 +99,7 @@ public class FoodlistActivity extends AppCompatActivity {
                     Intent foodlistIntent = new Intent(FoodlistActivity.this, EditActivity.class);
                     foodlistIntent.putExtra("index",index);
                     foodlistIntent.putExtra("district",mDistrict);
+                    finish();
                     context.startActivity(foodlistIntent);
                 }
             });
