@@ -1,4 +1,4 @@
-    package com.example.goeat;
+package com.example.goeat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -131,7 +131,7 @@ public class EditActivity extends AppCompatActivity {
         uploadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               onButtonShowPopupWindow(v);
+                onButtonShowPopupWindow(v);
             }
         });
 
@@ -141,16 +141,10 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String holdRange = pricerange.getText().toString();
-                holdRange = holdRange.replaceAll("[^a-zA-Z0-9]", " ");
-                int i = holdRange.length();
-                holdRange = holdRange.substring(13,i);
-                i = holdRange.length();
-                holdRange =holdRange.substring(0,i-5);
 
                 List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.getText().toString().split(",")));
                 List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.getText().toString().split(",")));
-
-                Log.d("Nameeee",instance.getName());
+                instance=new Place();
                 placeDA0.getInstance();
                 instance.setName(name.getText().toString());
                 Log.d("INSTANCEEEE",instance.getName());
@@ -178,28 +172,29 @@ public class EditActivity extends AppCompatActivity {
                 p.setLatitude(gp.getLatitude());
                 p.setLongitude(gp.getLongitude());
                 instance.setPosition(p);
+                instance.setPhoto("https://www.talkwalker.com/images/2020/blog-headers/image-analysis.png");
 
                 BitmapDrawable drawable = (BitmapDrawable) food.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
                 //////////////// GỌI HÀM ADD LÊN DATABASE!!!!!!!!!!
-//                placeDA0.getInstance().save(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if(task.isSuccessful()){
-//                            Log.d("Updateee",instance.getName());
-//                            Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
-//                            back.putExtra("district",mDistrict);
-//                            finish();
-//                            Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
-//                            startActivity(back);
-//                        }
-//                    }
-//                });
+                placeDA0.getInstance().add(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d("Updateee",instance.getName());
+                            Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+                            back.putExtra("district",mDistrict);
+                            finish();
+                            Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
+                            startActivity(back);
+                        }
+                    }
+                });
 
             }
         });
 
-}
+    }
     void loadFood(){
         delete.setVisibility(View.VISIBLE);
         instance = FoodlistActivity.listPlaceDistrict.get(mIndex);
@@ -354,7 +349,7 @@ public class EditActivity extends AppCompatActivity {
                 clearDim(root);
             }
         });
-}
+    }
     GeoPoint getCoordFromAddress(String address) throws IOException {
         Geocoder geocoder = new Geocoder(getApplicationContext());
         List<Address> addresses;

@@ -141,4 +141,41 @@ public class PlaceDAO {
             }
         });
     }
+    public Task<Void> add(final String district, final Place place){
+        final TaskCompletionSource<Void> task = new TaskCompletionSource<>();
+        getPlacesByDistrict(district)
+                .addOnSuccessListener(new OnSuccessListener<List<Place>>() {
+                    @Override
+                    public void onSuccess(List<Place> places) {
+                        long maxID = 0;
+                        for (Place place: places) {
+                            if (maxID < place.getId()) {
+                                maxID = place.getId();
+                            }
+                        }
+
+                        place.setId(maxID + 1);
+                        update(district, place)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        task.setResult(aVoid);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        task.setException(e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        task.setException(e);
+                    }
+                });
+        return task.getTask();
+    }
 }
