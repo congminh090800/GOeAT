@@ -13,6 +13,23 @@
         android:orientation="vertical"
         >
 
+        <ImageButton
+            android:id="@+id/upload_edit_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="156dp"
+            android:background="@drawable/round_bt"
+            android:elevation="15dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_cloud_upload_24"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/edit_img"
             android:layout_width="match_parent"
@@ -20,7 +37,7 @@
             android:adjustViewBounds="true"
             android:src="@drawable/bakery"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -28,7 +45,7 @@
 
         <LinearLayout
             android:id="@+id/edit_linearLayout2"
-            android:layout_width="412dp"
+            android:layout_width="match_parent"
             android:layout_height="383dp"
 
             android:layout_marginTop="20dp"
@@ -134,11 +151,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Save"
+                android:background="#24b2b4"
+                android:textColor="#FFFFFF"
+                android:layout_marginHorizontal="10dp"
                 android:layout_weight="1"/>
             <Button
                 android:id="@+id/cancel_Edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#24b2b4"
+                android:layout_marginHorizontal="10dp"
+                android:textColor="#FFFFFF"
                 android:text="Cancel"
                 android:layout_weight="1"/>
         </LinearLayout>
