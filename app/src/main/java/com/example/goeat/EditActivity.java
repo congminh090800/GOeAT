@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -46,6 +48,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.osmdroid.util.GeoPoint;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -161,11 +166,35 @@ public class EditActivity extends AppCompatActivity {
                 instance.setBegin(tempTime.get(0));
                 instance.setEnd((tempTime.get(1)));
                 Log.d("Addressss",instance.getAddress());
-
+                GeoPoint gp=null;
+                try{
+                    gp=new GeoPoint(getCoordFromAddress(instance.getAddress()));
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                Log.e("coordtest",gp.getLatitude()+" "+gp.getLongitude());
+                Position p=new Position();
+                p.setIs_verified(true);
+                p.setLatitude(gp.getLatitude());
+                p.setLongitude(gp.getLongitude());
+                instance.setPosition(p);
 
                 BitmapDrawable drawable = (BitmapDrawable) food.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
                 //////////////// GỌI HÀM ADD LÊN DATABASE!!!!!!!!!!
+//                placeDA0.getInstance().save(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if(task.isSuccessful()){
+//                            Log.d("Updateee",instance.getName());
+//                            Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+//                            back.putExtra("district",mDistrict);
+//                            finish();
+//                            Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
+//                            startActivity(back);
+//                        }
+//                    }
+//                });
 
             }
         });
@@ -325,5 +354,15 @@ public class EditActivity extends AppCompatActivity {
                 clearDim(root);
             }
         });
-};
+}
+    GeoPoint getCoordFromAddress(String address) throws IOException {
+        Geocoder geocoder = new Geocoder(getApplicationContext());
+        List<Address> addresses;
+        GeoPoint gp;
+        addresses = geocoder.getFromLocationName(address, 1);
+        if(addresses.size() > 0) {
+            return new GeoPoint(addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
+        }
+        return null;
+    }
 }
