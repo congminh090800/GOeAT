@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import java.util.Random;
 public class FoodlistActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String mDistrict;
+    private ImageButton adminPanel;
     private Task<List<Place>> taskDistrictDetail;
     static public List<Place> listPlaceDistrict = new ArrayList<Place>();
     private PlaceDAO mPlaceDAO;
@@ -49,7 +51,14 @@ public class FoodlistActivity extends AppCompatActivity {
         mDistrict = getIntent().getStringExtra(DistrictActivity.globalDistrict);
         Log.d("FOODLIST INTENT",mDistrict);
         getIntent().removeExtra("district");
-
+        adminPanel = findViewById(R.id.backtoDistrict);
+        adminPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gotoAdmin = new Intent(FoodlistActivity.this,DistrictActivity.class);
+                startActivity(gotoAdmin);
+            }
+        });
         RecyclerView foodlistView = (RecyclerView)findViewById(R.id.foodListRecyclerView);
         final FoodlistAdapter adapter = new FoodlistAdapter(listPlaceDistrict);
         adapter.notifyDataSetChanged();
