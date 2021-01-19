@@ -137,8 +137,8 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EditActivity.this,FoodlistActivity.class);
+                intent.putExtra("district",mDistrict);
                 startActivity(intent);
-
             }
         });
     }
