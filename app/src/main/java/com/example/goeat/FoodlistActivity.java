@@ -83,7 +83,14 @@ public class FoodlistActivity extends AppCompatActivity {
 
 
     }
-
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(FoodlistActivity.this,DistrictActivity.class);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
 
     public class FoodlistAdapter extends RecyclerView.Adapter<FoodlistAdapter.FoodListViewHolder>{
         private List<Place> DistrictInfo ;
