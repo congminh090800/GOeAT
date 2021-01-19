@@ -102,8 +102,8 @@ public class EditActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(getApplicationContext(),"Xóa thành công",Toast.LENGTH_LONG);
                         Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+                        back.putExtra("district",mDistrict);
                         finish();
-                        back.putExtra(DistrictActivity.globalDistrict,mDistrict);
                         startActivity(back);
                     }
                 });
@@ -135,6 +135,9 @@ public class EditActivity extends AppCompatActivity {
             tempRange.setMin_price(Integer.parseInt(tempRangeOneTwo.get(0)));
             tempRange.setMax_price(Integer.parseInt(tempRangeOneTwo.get(1)));
             instance.setPrice_range(tempRange);
+            List<String> tempTime=new ArrayList<String>(Arrays.asList(opcl.getText().toString().substring(13).split(" - ")));
+            instance.setBegin(tempTime.get(0));
+            instance.setEnd((tempTime.get(1)));
             Log.d("Addressss",instance.getAddress());
 
             placeDA0.getInstance().update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -143,9 +146,9 @@ public class EditActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         Log.d("Updateee",instance.getName());
                         Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+                        back.putExtra("district",mDistrict);
                         finish();
                         Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
-                        back.putExtra(DistrictActivity.globalDistrict,mDistrict);
                         startActivity(back);
 
                     }
