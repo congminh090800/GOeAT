@@ -44,7 +44,8 @@ public class FoodlistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foodlist);
         mDistrict = getIntent().getStringExtra("district");
-
+        Log.e("districttest",mDistrict);
+        listPlaceDistrict.clear();
         RecyclerView foodlistView = (RecyclerView)findViewById(R.id.foodListRecyclerView);
         final FoodlistAdapter adapter = new FoodlistAdapter(listPlaceDistrict);
         foodlistView.setLayoutManager(new LinearLayoutManager(this));
@@ -64,10 +65,6 @@ public class FoodlistActivity extends AppCompatActivity {
                         Log.d("Places",e.getMessage());
                     }
                 });
-
-
-
-
     }
     public class FoodlistAdapter extends RecyclerView.Adapter<FoodlistAdapter.FoodListViewHolder>{
         private List<Place> DistrictInfo ;

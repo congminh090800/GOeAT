@@ -77,7 +77,7 @@ public class EditActivity extends AppCompatActivity {
                 tags.append(", ");
             }
         }
-        phone.setText(instance.getPhones().get(0));
+        phone.setText("Phone:"+(instance.getPhones().get(0)==null?"":instance.getPhones().get(0)));
         opcl.setText("OPEN/CLOSED: " + instance.getBegin() + " - " + instance.getEnd());
         pricerange.setText("PRICE RANGE: " + instance.getPrice_range().min_price + "-" + instance.getPrice_range().max_price + "(VND)");
 

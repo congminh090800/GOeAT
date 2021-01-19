@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class DistrictActivity extends AppCompatActivity {
         districtListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("districttest",""+position);
                 Intent districtIntent = new Intent(DistrictActivity.this,FoodlistActivity.class);
                 districtIntent.putExtra("district",district[position]);
                 startActivity(districtIntent);
