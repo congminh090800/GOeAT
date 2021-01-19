@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -66,107 +67,7 @@ public class EditActivity extends AppCompatActivity {
         mIndex = getIntent().getIntExtra("index", -1);
         mDistrict = getIntent().getStringExtra("district");
         InitializeUI();
-        instance = FoodlistActivity.listPlaceDistrict.get(mIndex);
-        address.setText(instance.getAddress());
-        Picasso.get().load(instance.getPhoto()).into(food);
-        name.setText(instance.getName());
-        tags.setText("TAGS: ");
-        for (String tag : instance.getCategories()) {
-            tags.append(tag);
-            if (tag != instance.getCategories().get(instance.getCategories().size() - 1)) {
-                tags.append(", ");
-            }
-        }
-        phone.setText("Phone:"+(instance.getPhones().get(0)==null?"":instance.getPhones().get(0)));
-        opcl.setText("OPEN/CLOSED: " + instance.getBegin() + " - " + instance.getEnd());
-        pricerange.setText("PRICE RANGE: " + instance.getPrice_range().min_price + "-" + instance.getPrice_range().max_price + "(VND)");
-
-        uploadImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-            }
-        });
-
-
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                placeDA0.getInstance();
-                placeDA0.getInstance().delete(mDistrict,instance.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getApplicationContext(),"Xóa thành công",Toast.LENGTH_LONG);
-                        Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
-                        back.putExtra("district",mDistrict);
-                        finish();
-                        startActivity(back);
-                    }
-                });
-
-            }
-        });
-        save.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String holdRange = pricerange.getText().toString();
-            holdRange = holdRange.replaceAll("[^a-zA-Z0-9]", " ");
-            int i = holdRange.length();
-            holdRange = holdRange.substring(13,i);
-            i = holdRange.length();
-            holdRange =holdRange.substring(0,i-5);
-
-            List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.getText().toString().substring(6).split(", ")));
-            List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.getText().toString().substring(6).split(", ")));
-
-            Log.d("Nameeee",instance.getName());
-            placeDA0.getInstance();
-            instance.setName(name.getText().toString());
-            Log.d("INSTANCEEEE",instance.getName());
-            instance.setAddress(address.getText().toString());
-            instance.setPhones(tempPhone);
-            instance.setCategories(tempCateory);
-            List<String> tempRangeOneTwo = new ArrayList<String>(Arrays.asList(holdRange.split(" ")));
-            PriceRange tempRange = new PriceRange();
-            tempRange.setMin_price(Integer.parseInt(tempRangeOneTwo.get(0)));
-            tempRange.setMax_price(Integer.parseInt(tempRangeOneTwo.get(1)));
-            instance.setPrice_range(tempRange);
-            List<String> tempTime=new ArrayList<String>(Arrays.asList(opcl.getText().toString().substring(13).split(" - ")));
-            instance.setBegin(tempTime.get(0));
-            instance.setEnd((tempTime.get(1)));
-            Log.d("Addressss",instance.getAddress());
-
-            placeDA0.getInstance().update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Log.d("Updateee",instance.getName());
-                        Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
-                        back.putExtra("district",mDistrict);
-                        finish();
-                        Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
-                        startActivity(back);
-
-                    }
-                }
-            });
-
-
-        }
-    });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EditActivity.this,FoodlistActivity.class);
-                intent.putExtra("district",mDistrict);
-                finish();
-                startActivity(intent);
-            }
-        });
+        if(mIndex==-1){AddFood();}else {loadFood();}
     }
     @Override
     protected void onActivityResult(int requestCode,int resultCode, Intent data){
@@ -196,5 +97,140 @@ public class EditActivity extends AppCompatActivity {
         delete = findViewById(R.id.delete_edit);
         opcl = findViewById(R.id.edit_opcl);
         pricerange = findViewById(R.id.edit_pricerange);
+    }
+    void AddFood() {
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EditActivity.this,FoodlistActivity.class);
+                intent.putExtra("district",mDistrict);
+                finish();
+                startActivity(intent);
+            }
+        });
+        uploadImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
+            }
+        });
+
+
+        delete.setVisibility(View.INVISIBLE);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String holdRange = pricerange.getText().toString();
+                holdRange = holdRange.replaceAll("[^a-zA-Z0-9]", " ");
+                int i = holdRange.length();
+                holdRange = holdRange.substring(13,i);
+                i = holdRange.length();
+                holdRange =holdRange.substring(0,i-5);
+
+                List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.getText().toString().substring(6).split(", ")));
+                List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.getText().toString().substring(6).split(", ")));
+
+                Log.d("Nameeee",instance.getName());
+                placeDA0.getInstance();
+                instance.setName(name.getText().toString());
+                Log.d("INSTANCEEEE",instance.getName());
+                instance.setAddress(address.getText().toString());
+                instance.setPhones(tempPhone);
+                instance.setCategories(tempCateory);
+                List<String> tempRangeOneTwo = new ArrayList<String>(Arrays.asList(holdRange.split(" ")));
+                PriceRange tempRange = new PriceRange();
+                tempRange.setMin_price(Integer.parseInt(tempRangeOneTwo.get(0)));
+                tempRange.setMax_price(Integer.parseInt(tempRangeOneTwo.get(1)));
+                instance.setPrice_range(tempRange);
+                List<String> tempTime=new ArrayList<String>(Arrays.asList(opcl.getText().toString().substring(13).split(" - ")));
+                instance.setBegin(tempTime.get(0));
+                instance.setEnd((tempTime.get(1)));
+                Log.d("Addressss",instance.getAddress());
+
+
+                BitmapDrawable drawable = (BitmapDrawable) food.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                placeDA0.getInstance().update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d("Updateee",instance.getName());
+                            Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+                            back.putExtra("district",mDistrict);
+                            finish();
+                            Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
+                            startActivity(back);
+
+                        }
+                    }
+                });
+            }
+        });
+
+}
+    void loadFood(){
+        instance = FoodlistActivity.listPlaceDistrict.get(mIndex);
+        address.setText(instance.getAddress());
+        Picasso.get().load(instance.getPhoto()).into(food);
+        name.setText(instance.getName());
+        tags.setText("TAGS: ");
+        for (String tag : instance.getCategories()) {
+            tags.append(tag);
+            if (tag != instance.getCategories().get(instance.getCategories().size() - 1)) {
+                tags.append(", ");
+            }
+        }
+        phone.setText("Phone:"+(instance.getPhones().get(0)==null?"":instance.getPhones().get(0)));
+        opcl.setText("OPEN/CLOSED: " + instance.getBegin() + " - " + instance.getEnd());
+        pricerange.setText("PRICE RANGE: " + instance.getPrice_range().min_price + "-" + instance.getPrice_range().max_price + "(VND)");
+        String holdRange = pricerange.getText().toString();
+        holdRange = holdRange.replaceAll("[^a-zA-Z0-9]", " ");
+        int i = holdRange.length();
+        holdRange = holdRange.substring(13,i);
+        i = holdRange.length();
+        holdRange =holdRange.substring(0,i-5);
+
+        List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.getText().toString().substring(6).split(", ")));
+        List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.getText().toString().substring(6).split(", ")));
+
+        Log.d("Nameeee",instance.getName());
+        placeDA0.getInstance();
+        instance.setName(name.getText().toString());
+        Log.d("INSTANCEEEE",instance.getName());
+        instance.setAddress(address.getText().toString());
+        instance.setPhones(tempPhone);
+        instance.setCategories(tempCateory);
+        List<String> tempRangeOneTwo = new ArrayList<String>(Arrays.asList(holdRange.split(" ")));
+        PriceRange tempRange = new PriceRange();
+        tempRange.setMin_price(Integer.parseInt(tempRangeOneTwo.get(0)));
+        tempRange.setMax_price(Integer.parseInt(tempRangeOneTwo.get(1)));
+        instance.setPrice_range(tempRange);
+        List<String> tempTime=new ArrayList<String>(Arrays.asList(opcl.getText().toString().substring(13).split(" - ")));
+        instance.setBegin(tempTime.get(0));
+        instance.setEnd((tempTime.get(1)));
+        Log.d("Addressss",instance.getAddress());
+
+
+        BitmapDrawable drawable = (BitmapDrawable) food.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        placeDA0.getInstance().update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.d("Updateee",instance.getName());
+                    Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+                    back.putExtra("district",mDistrict);
+                    finish();
+                    Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
+                    startActivity(back);
+
+                }
+            }
+        });
+
     }
 }
