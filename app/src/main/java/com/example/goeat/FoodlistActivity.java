@@ -28,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,12 +45,17 @@ public class FoodlistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foodlist);
-        mDistrict = getIntent().getStringExtra("district");
+        listPlaceDistrict.clear();
+        mDistrict = getIntent().getStringExtra(DistrictActivity.globalDistrict);
+        Log.d("FOODLIST INTENT",mDistrict);
+        getIntent().removeExtra("district");
 
         RecyclerView foodlistView = (RecyclerView)findViewById(R.id.foodListRecyclerView);
         final FoodlistAdapter adapter = new FoodlistAdapter(listPlaceDistrict);
+        adapter.notifyDataSetChanged();
         foodlistView.setLayoutManager(new LinearLayoutManager(this));
         foodlistView.setAdapter(adapter);
+
         PlaceDAO.getInstance().getPlacesByDistrict(mDistrict)
                 .addOnSuccessListener(new OnSuccessListener<List<Place>>() {
                     @Override
@@ -66,9 +73,9 @@ public class FoodlistActivity extends AppCompatActivity {
                 });
 
 
-
-
     }
+
+
     public class FoodlistAdapter extends RecyclerView.Adapter<FoodlistAdapter.FoodListViewHolder>{
         private List<Place> DistrictInfo ;
         public FoodlistAdapter(List<Place> district){
@@ -98,7 +105,7 @@ public class FoodlistActivity extends AppCompatActivity {
             viewHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int index=viewHolder.getAdapterPosition();
+                    int index= viewHolder.getAdapterPosition();
                     Intent foodlistIntent = new Intent(FoodlistActivity.this, EditActivity.class);
                     foodlistIntent.putExtra("index",index);
                     foodlistIntent.putExtra("district",mDistrict);

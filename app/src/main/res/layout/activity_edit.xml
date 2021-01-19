@@ -141,29 +141,41 @@
             android:id="@+id/under"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_linearLayout2">
+
             <Button
                 android:id="@+id/save_Edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
-                android:background="#24b2b4"
-                android:textColor="#FFFFFF"
                 android:layout_marginHorizontal="10dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="#24b2b4"
+                android:text="Save"
+                android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/delete_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1"
+                android:background="#24b2b4"
+                android:text="Delete"
+                android:textColor="#FFFFFF" />
             <Button
                 android:id="@+id/cancel_Edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#24b2b4"
                 android:layout_marginHorizontal="10dp"
-                android:textColor="#FFFFFF"
+                android:layout_weight="1"
+                android:background="#24b2b4"
                 android:text="Cancel"
-                android:layout_weight="1"/>
+                android:textColor="#FFFFFF" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

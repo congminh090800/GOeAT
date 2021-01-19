@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -65,6 +67,7 @@ public class TabActivity extends AppCompatActivity {
     private HomeFragment homeFragment;
     private NearbyFragment nearbyFragment;
     private HistoryFragment historyFragment;
+    private ImageButton adminPanel;
     private ProfileFragment profileFragment;
     private GeocodingAsync myGeocoding;
     private DatabaseReference mDatabase;
@@ -119,6 +122,7 @@ public class TabActivity extends AppCompatActivity {
         placesList=new ArrayList<Place>();
         visitedList=new ArrayList<Place>();
         historyList=new ArrayList<HistoryVal>();
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         getVisited();
         getNearby();
@@ -181,6 +185,14 @@ public class TabActivity extends AppCompatActivity {
                     }
                 }
         );
+        adminPanel = findViewById(R.id.admin_panel);
+        adminPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gotoAdmin = new Intent(TabActivity.this,DistrictActivity.class);
+                startActivity(gotoAdmin);
+            }
+        });
     }
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {

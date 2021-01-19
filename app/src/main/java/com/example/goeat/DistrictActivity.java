@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 
 public class DistrictActivity extends AppCompatActivity {
     ListView districtListView ;
+    public static final String globalDistrict = "district";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +54,15 @@ public class DistrictActivity extends AppCompatActivity {
         districtListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent districtIntent = new Intent(DistrictActivity.this,FoodlistActivity.class);
-                districtIntent.putExtra("district",district[position]);
+                Intent districtIntent = new Intent(DistrictActivity.this,FoodlistActivity.class);       districtIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                districtIntent.removeExtra(globalDistrict);
+                districtIntent.putExtra(globalDistrict,district[position]);
+                Log.d("DISTRICT INTENT",district[position]);
                 startActivity(districtIntent);
             }
         });
     }
+
     class districtAdapter extends ArrayAdapter<String>{
         String mdistrict[];
         Context context;

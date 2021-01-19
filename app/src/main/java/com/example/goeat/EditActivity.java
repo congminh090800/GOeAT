@@ -46,7 +46,7 @@ public class EditActivity extends AppCompatActivity {
     private String mDistrict;
     private Place instance;
     private PlaceDAO placeDA0;
-    private Button save, cancel;
+    private Button save, cancel,delete;
     private ImageButton uploadImg;
     //    //sử dụng SHARED PREFERENCES để lấy địa chỉ hiện tại ở bất cứ class nào, ví dụ bên dưới
 //    SharedPreferences sharedPref = getSharedPreferences("GOeAT", Context.MODE_PRIVATE);
@@ -130,6 +130,20 @@ public class EditActivity extends AppCompatActivity {
                     }
                 }
             });
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    placeDA0.getInstance();
+                    placeDA0.getInstance().delete(mDistrict,instance.getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(getApplicationContext(),"Xóa thành công",Toast.LENGTH_LONG);
+                        }
+                    });
+                    Intent back = new Intent(EditActivity.this,FoodlistActivity.class);
+                    startActivity(back);
+                }
+            });
 
         }
     });
@@ -137,6 +151,8 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EditActivity.this,FoodlistActivity.class);
+                intent.putExtra("district",mDistrict);
+                finish();
                 startActivity(intent);
 
             }
@@ -167,6 +183,7 @@ public class EditActivity extends AppCompatActivity {
         address = findViewById(R.id.edit_address);
         tags = findViewById(R.id.edit_tags);
         phone = findViewById(R.id.edit_phone);
+        delete = findViewById(R.id.delete_edit);
         opcl = findViewById(R.id.edit_opcl);
         pricerange = findViewById(R.id.edit_pricerange);
     }
