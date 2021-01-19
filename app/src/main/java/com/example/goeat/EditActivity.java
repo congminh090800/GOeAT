@@ -174,6 +174,7 @@ public class EditActivity extends AppCompatActivity {
     void loadFood(){
         delete.setVisibility(View.VISIBLE);
         instance = FoodlistActivity.listPlaceDistrict.get(mIndex);
+        Log.d("NAMEEEEEEEEEEEEEEE",String.valueOf(instance.getId()));
         address.setText(instance.getAddress());
         Picasso.get().load(instance.getPhoto()).into(food);
         name.setText(instance.getName());
@@ -242,16 +243,10 @@ public class EditActivity extends AppCompatActivity {
                 List<String> tempTime=new ArrayList<String>(Arrays.asList(opcl.getText().toString().substring(13).split(" - ")));
                 instance.setBegin(tempTime.get(0));
                 instance.setEnd((tempTime.get(1)));
-                Log.d("Addressss",instance.getAddress());
+                Log.d("NAMEEEEEEEEEEEEEEE",String.valueOf(instance.getId()));
 
-                BitmapDrawable drawable = (BitmapDrawable) food.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-                placeDA0.getInstance().uploadFoodImg(bitmap,instance).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        Toast.makeText(getApplicationContext(),"Cập nhật thành công",Toast.LENGTH_LONG);
-                    }
-                });
+
+
                 placeDA0.getInstance().update(mDistrict,instance).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -292,7 +287,7 @@ public class EditActivity extends AppCompatActivity {
 
         View popupView = inflater.inflate(R.layout.popup_imglink, null);
         submit = popupView.findViewById(R.id.OK);
-        imageLINK = popupView.findViewById(R.id.imageLINK);
+        imageLINK = popupView.findViewById(R.id.edit_imageLink);
 
 
         final ViewGroup root = (ViewGroup) getWindow().getDecorView().getRootView();
@@ -310,10 +305,12 @@ public class EditActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                instance.setPhoto(imageLINK.getText().toString());
+                Log.d("IMAGEEEEEEEEEEEEEE",imageLINK.getText().toString());
                 popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        instance.setPhoto(imageLINK.toString());
+
                         clearDim(root);
 
                     }
