@@ -103,8 +103,8 @@ public class EditActivity extends AppCompatActivity {
             i = holdRange.length();
             holdRange =holdRange.substring(0,i-5);
 
-            List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.toString().split(",")));
-            List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.toString().split(",")));
+            List<String> tempCateory = new ArrayList<String>(Arrays.asList(tags.getText().toString().substring(6).split(", ")));
+            List<String> tempPhone = new ArrayList<String>(Arrays.asList(phone.getText().toString().substring(6).split(", ")));
 
             Log.d("Nameeee",instance.getName());
             placeDA0.getInstance();
@@ -138,6 +138,7 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(EditActivity.this,FoodlistActivity.class);
                 intent.putExtra("district",mDistrict);
+                finish();
                 startActivity(intent);
             }
         });
