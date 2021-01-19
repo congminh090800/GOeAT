@@ -1,6 +1,8 @@
 package com.example.goeat.database;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -18,13 +20,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 
 public class PlaceDAO {
-
+    private final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private static class Loader {
         static final PlaceDAO INSTANCE = new PlaceDAO();
     }
@@ -72,7 +79,38 @@ public class PlaceDAO {
 
         return task.getTask();
     }
+    private static <T> OnFailureListener taskcsFailureListener(final TaskCompletionSource<T> taskCompletionSource) {
+        return new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                taskCompletionSource.setException(e);
+            }
+        };
+    }
 
+    public Task<Uri> uploadFoodImg(Bitmap bitmap,Place place) {
+        final TaskCompletionSource<Uri> taskCompletionSource = new TaskCompletionSource<>();
+        final String filename = String.valueOf(place.getId());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
+        storageReference.child("images").child(filename).putBytes(data)
+                .addOnFailureListener(taskcsFailureListener(taskCompletionSource))
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        taskSnapshot.getStorage().getDownloadUrl()
+                                .addOnFailureListener(taskcsFailureListener(taskCompletionSource))
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        taskCompletionSource.setResult(uri);
+                                    }
+                                });
+                    }
+                });
+        return taskCompletionSource.getTask();
+    }
     public void test(){
         Task<List<Place>> taskDistrictDetail = PlaceDAO.getInstance().getPlacesByDistrict("BinhChanh");
 
