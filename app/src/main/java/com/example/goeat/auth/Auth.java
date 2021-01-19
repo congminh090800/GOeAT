@@ -217,8 +217,10 @@ public class Auth {
                                 currentUser = snapshot.getValue(User.class);
                                 if (currentUser != null) {
                                     currentUser.setUid(firebaseUser.getUid(), userUIDSetter);
+                                    taskCompletionSource.setResult(currentUser);
+                                } else {
+                                    taskCompletionSource.setException(new Exception());
                                 }
-                                taskCompletionSource.setResult(currentUser);
                             } catch (Exception e) {
                                 taskCompletionSource.setException(e);
                             }

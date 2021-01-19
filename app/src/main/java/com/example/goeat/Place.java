@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -14,7 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 public class Place{
     long id;
     String address;
@@ -126,6 +130,26 @@ public class Place{
 
     public void setTotalReviews(int totalReviews) {
         TotalReviews = totalReviews;
+    }
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("address", address);
+        result.put("begin", begin);
+        result.put("end", end);
+        result.put("categories", categories);
+        result.put("name", name);
+        result.put("phones", phones);
+        result.put("photo", photo);
+        result.put("position", position);
+        result.put("price_range", price_range);
+        result.put("Rating", Rating);
+        result.put("TotalReviews", TotalReviews);
+
+        return result;
     }
 }
 
